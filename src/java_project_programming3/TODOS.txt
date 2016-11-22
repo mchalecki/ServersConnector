@@ -1,0 +1,3 @@
+TODO.1: Rewrite server to get many clients
+TODO.2: Handle the asynchronous of receive and send message. Now is one message in, one out. It has to be constant listener and sender)
+TODO.3: Ping message
