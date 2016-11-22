@@ -4,13 +4,13 @@ import com.sun.istack.internal.Nullable;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.TimeUnit;
 
 class TCPServer {
+    private static final int PORT = 6789;
     @Nullable
     private static ServerSocket createServer(){
         try {
-            ServerSocket serverSocket = new ServerSocket(6789);
+            ServerSocket serverSocket = new ServerSocket(PORT);
             System.out.println("Created server");
             return serverSocket;
         }
@@ -38,34 +38,17 @@ class TCPServer {
     }
 
     private static void run() throws InterruptedException, IOException {
-        String received_text;
-        boolean exit = false;
+        Socket socket = null;
         ServerSocket serverSocket = createServer();
-        wholeServer:
-        while (true) {
-            TimeUnit.SECONDS.sleep(1);
-            Socket connectionSocket = makeConnectionSocket(serverSocket);
-            while (connectionSocket != null) {
-                BufferedReader inFromClient =
-                        new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-                received_text = inFromClient.readLine();
-                if (received_text != null) {
-                    System.out.println("Received: " + received_text);
-                    outToClient.writeBytes(received_text+'\n');
-                } else {
-                    System.out.print("Client has disconnected");
-                    break;
+
+            while (true) {
+                try {
+                    socket = serverSocket.accept();
+                } catch (IOException e) {
+                    System.out.println("I/O error: " + e);
                 }
-                if (exit) {
-                    System.out.print("Exit");
-                    break wholeServer;
-                }
+                new ClientThread(socket).start();
             }
-            if (exit) {
-                System.out.print("Exit");
-                break wholeServer;
-            }
-        }
+
     }
 }

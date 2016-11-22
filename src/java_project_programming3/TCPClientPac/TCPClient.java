@@ -33,7 +33,7 @@ class TCPClient {
 
     private static void run() throws IOException, InterruptedException {
         String send_text;
-        String received_text;
+        String received_text="";
         BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         boolean exit = false;
         while (true) {
@@ -46,10 +46,8 @@ class TCPClient {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                outToServer.writeBytes("ABC" + '\n');
                 outToServer.writeBytes(send_text + '\n');
                 received_text = inFromServer.readLine();
-
                 System.out.println("FROM SERVER: " + received_text);
 
                 if (exit) {
