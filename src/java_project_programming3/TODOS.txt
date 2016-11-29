@@ -3,3 +3,4 @@
 //TODO.3: Ping message.
 TODO.4: Handle json.
 //TODO.5: Breaks if client_thread closes. Has to try make new connection
+TODO.5 Make simple redirect as a test of srv+client

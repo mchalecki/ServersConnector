@@ -16,10 +16,10 @@ class TCPClient {
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    private static Socket make_connection() {
+    private static Socket make_connection(String host) {
         Socket clientSocket = null;
         try {
-            clientSocket = new Socket("localhost", 6789);
+            clientSocket = new Socket(host, 6789);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
@@ -34,11 +34,12 @@ class TCPClient {
 
     private void run() throws InterruptedException {
         String received_text;
+
         wholeServer:
         while (true) {
             TimeUnit.SECONDS.sleep(1);
             System.out.println("Making new connection");
-            Socket clientSocket = make_connection();
+            Socket clientSocket = make_connection("127.0.0.2");
             while (clientSocket != null) {
                 try {
                     sendMessageFromSystemInput(clientSocket);
