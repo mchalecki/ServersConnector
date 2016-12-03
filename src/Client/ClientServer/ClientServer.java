@@ -18,7 +18,7 @@ public class ClientServer extends Thread {
     private static ServerSocket createServer() {
         InetAddress address = null;
         try {
-            address = InetAddress.getByName("127.0.0.2");
+            address = InetAddress.getByName("127.0.0.11");
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }

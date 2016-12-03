@@ -4,4 +4,6 @@
 TODO.4: Handle json messages. Server target should be in json and additional info like from, type etc.
 //TODO.5: Breaks if client_thread closes. Has to try make new connection
 TODO.5 Make simple redirect
-TODO.6 Refactor
+TODO.6 Refactor!
+TODO.7 Automate adding nextHost when connecting. Now it makes connection every time. Probably it has to keep connection.
+TODO.8 To do 7 it has to have type in message. We want to connect redir to first srv. So srv must send type of mes to "connect" and then redir analyze and change.

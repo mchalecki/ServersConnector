@@ -15,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ServerMain {
     private static final int PORT = 6789;
-    private static String temp_host;
+    private static String temp_host="127.0.0.1";;
+    private String nextHost="127.0.0.11";
     @Nullable
     private static ServerSocket createServer() {
-        temp_host = "127.0.0.3";
         InetAddress address = null;
         try {
             address = InetAddress.getByName(temp_host);
@@ -71,6 +71,7 @@ public class ServerMain {
         }
     }
     public static void main(String args[]){
+        ServerMain srv = new ServerMain();
         String received_text;
         ServerSocket serverSocket = createServer();
         while (true) {
@@ -90,7 +91,7 @@ public class ServerMain {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
-                sendMessage("127.0.0.2",received_text);
+                sendMessage(srv.nextHost,received_text);
             } else {
                 System.out.print("Client has disconnected");
                 break;

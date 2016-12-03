@@ -1,45 +1,48 @@
-package BasicComponents.TCPServerPac;
+package Redirect;
 
 import java.io.*;
 import java.net.Socket;
 
-public class ClientThread extends Thread {
+public class RedirectClientThread extends Thread{
     private Socket socket;
+    private static final int PORT = 6789;
     private BufferedReader brinp = null;
-    private DataOutputStream out = null;
+    private String targetHost="127.0.0.1";
 
-    ClientThread(Socket clientSocket) {
+    RedirectClientThread(Socket clientSocket) {
         System.out.println("New client");
         socket = clientSocket;
         try {
             InputStream inp = socket.getInputStream();
             brinp = new BufferedReader(new InputStreamReader(inp));
-            out = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             System.out.println("Cannot initialize socket");
             e.printStackTrace();
         }
     }
-
-    private int sendBack(String message) {
+    private Socket make_connection() {
+        Socket clientSocket = null;
         try {
-            out.writeBytes(message + "\n\r");
-            out.flush();
+            clientSocket = new Socket(targetHost, PORT);
+            System.out.println("Connected");
         } catch (IOException e) {
-            e.printStackTrace();
-            return 0;
+            System.out.println("Failed to makeConnectionSocket");
         }
-        return 1;
+        return clientSocket;
     }
-
-    private void interpretMessage(String message) {
-        if (message.equals("PING")) {
-            sendBack("PONG");
-        } else {
-            sendBack(message);
+    private void sendForward(String message){
+        System.out.println("Forwarding message "+message);
+        System.out.println("Making new connection");
+        Socket clientSocket = make_connection();
+        if (clientSocket != null) {
+            try {
+                DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                outToServer.writeBytes(message + '\n');
+            } catch (IOException e) {
+                System.out.println("Can't send message");
+            }
         }
     }
-
     public void run() {
         String line;
         while (true) {
@@ -50,8 +53,7 @@ public class ClientThread extends Thread {
                     socket.close();
                     return;
                 } else {
-                    System.out.println(line);
-                    interpretMessage(line);
+                    sendForward(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
