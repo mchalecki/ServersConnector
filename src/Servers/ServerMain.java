@@ -1,8 +1,10 @@
-package Client.ClientServer;
+package Servers;
+
 
 import com.sun.istack.internal.Nullable;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -11,14 +13,15 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
-public class ClientServer extends Thread {
+public class ServerMain {
     private static final int PORT = 6789;
-
+    private static String temp_host;
     @Nullable
     private static ServerSocket createServer() {
+        temp_host = "127.0.0.3";
         InetAddress address = null;
         try {
-            address = InetAddress.getByName("127.0.0.2");
+            address = InetAddress.getByName(temp_host);
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }
@@ -32,7 +35,6 @@ public class ClientServer extends Thread {
             return null;
         }
     }
-
     @Nullable
     private static Socket makeConnectionSocket(ServerSocket serverSocket) {
 
@@ -45,8 +47,30 @@ public class ClientServer extends Thread {
             return null;
         }
     }
-
-    public void run() {
+    private static Socket makeSenderSocket(String host) {
+        Socket clientSocket = null;
+        try {
+            clientSocket = new Socket(host, PORT);
+            System.out.println("Connected");
+        } catch (IOException e) {
+            System.out.println("Failed to makeConnectionSocket");
+        }
+        return clientSocket;
+    }
+    private static void sendMessage(String host, String message)
+    {
+        System.out.println("Making new connection");
+        Socket clientSocket = makeSenderSocket(host);
+        if (clientSocket != null) {
+            try {
+                DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                outToServer.writeBytes(message + '\n');
+            } catch (IOException e) {
+                System.out.println("Can't send message");
+            }
+        }
+    }
+    public static void main(String args[]){
         String received_text;
         ServerSocket serverSocket = createServer();
         while (true) {
@@ -66,6 +90,7 @@ public class ClientServer extends Thread {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
+                sendMessage("127.0.0.2",received_text);
             } else {
                 System.out.print("Client has disconnected");
                 break;

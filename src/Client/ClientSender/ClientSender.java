@@ -8,19 +8,19 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ClientSender extends Thread {
-    private String host;
+    private String targetHost;
     private static final int PORT = 6789;
     private static BufferedReader inFromUser;
 
-    public ClientSender(String host) {
-        this.host = host;
+    public ClientSender(String targetHost) {
+        this.targetHost = targetHost;
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    private static Socket make_connection(String host) {
+    private Socket make_connection() {
         Socket clientSocket = null;
         try {
-            clientSocket = new Socket(host, PORT);
+            clientSocket = new Socket(targetHost, PORT);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
@@ -30,7 +30,7 @@ public class ClientSender extends Thread {
 
     private void send_message(String message) {
         System.out.println("Making new connection");
-        Socket clientSocket = make_connection(host);
+        Socket clientSocket = make_connection();
         if (clientSocket != null) {
             try {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
