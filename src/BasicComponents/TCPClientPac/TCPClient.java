@@ -1,4 +1,4 @@
-package java_project_programming3.TCPClientPac;
+package BasicComponents.TCPClientPac;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

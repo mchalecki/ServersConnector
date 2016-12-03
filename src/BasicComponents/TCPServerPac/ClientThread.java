@@ -1,4 +1,4 @@
-package java_project_programming3.TCPServerPac;
+package BasicComponents.TCPServerPac;
 
 import java.io.*;
 import java.net.Socket;
