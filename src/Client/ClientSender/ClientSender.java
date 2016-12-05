@@ -1,6 +1,5 @@
 package Client.ClientSender;
 
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,7 +42,6 @@ public class ClientSender extends Thread {
 
     public void run() {
         while (true) {
-            //GUI but now reading from console
             try {
                 String send_text = inFromUser.readLine();
                 send_message(send_text);
