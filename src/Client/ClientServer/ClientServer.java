@@ -13,12 +13,35 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientServer extends Thread {
     private static final int PORT = 6789;
+    private static boolean isAlive = true;
+    public static String host;
+    
+        public boolean getAlive()
+    {
+        return isAlive;
+    }
+    
+    public static void setAlive(boolean alive)
+    {
+        isAlive = alive;
+    }
+
+    public String getHost()
+    {
+        return host;
+    }
+    
+    public int getPort()
+    {
+        return PORT;
+    }
 
     @Nullable
     private static ServerSocket createServer() {
         InetAddress address = null;
         try {
             address = InetAddress.getByName("127.0.0.11");
+            host = address.toString();
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }
@@ -29,6 +52,7 @@ public class ClientServer extends Thread {
             return serverSocket;
         } catch (IOException e) {
             System.out.println("Cant create server");
+            setAlive(false);
             return null;
         }
     }

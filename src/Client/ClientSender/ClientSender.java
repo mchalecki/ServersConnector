@@ -11,6 +11,8 @@ public class ClientSender extends Thread {
     private String targetHost;
     private static final int PORT = 6789;
     private static BufferedReader inFromUser;
+    
+    
 
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;
@@ -24,6 +26,7 @@ public class ClientSender extends Thread {
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
+           
         }
         return clientSocket;
     }
