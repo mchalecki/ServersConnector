@@ -1,6 +1,5 @@
 package Client.ClientSender;
 
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,6 +10,7 @@ public class ClientSender extends Thread {
     private String targetHost;
     private final int PORT = 6789;
     private BufferedReader inFromUser;
+    private Socket clientSocket;
 
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;
@@ -28,9 +28,18 @@ public class ClientSender extends Thread {
         return clientSocket;
     }
 
+    /**
+     * Logging to system as first connection.
+     */
+    private void welcomeMessage() {
+        org.json.JSONObject obj = new org.json.JSONObject();
+        obj.put("type", 1);
+        obj.put("content", new org.json.JSONObject());
+        send_message(obj.toString());
+    }
+
     private void send_message(String message) {
-        System.out.println("Making new connection");
-        Socket clientSocket = make_connection();
+
         if (clientSocket != null) {
             try {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -42,6 +51,9 @@ public class ClientSender extends Thread {
     }
 
     public void run() {
+        System.out.println("Making new connection");
+        clientSocket = make_connection();
+        welcomeMessage();
         while (true) {
             //GUI but now reading from console
             try {

@@ -32,6 +32,12 @@ public class RedirectClientThread extends Thread {
         return clientSocket;
     }
 
+    private void processMessage(String message) {
+        org.json.JSONObject obj = new org.json.JSONObject(message);
+        obj.put("IP_from", socket.getInetAddress().toString());
+        sendForward(obj.toString());
+    }
+
     private void sendForward(String message) {
         System.out.println("Forwarding message " + message);
         System.out.println("Making new connection");
@@ -56,7 +62,7 @@ public class RedirectClientThread extends Thread {
                     socket.close();
                     return;
                 } else {
-                    sendForward(line);
+                    processMessage(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
