@@ -3,11 +3,11 @@ package Redirect;
 import java.io.*;
 import java.net.Socket;
 
-public class RedirectClientThread extends Thread{
+public class RedirectClientThread extends Thread {
     private Socket socket;
-    private static final int PORT = 6789;
+    private final int PORT = 6789;
     private BufferedReader brinp = null;
-    private String targetHost="127.0.0.1";
+    private String targetHost = "127.0.0.1";
 
     RedirectClientThread(Socket clientSocket) {
         System.out.println("New client");
@@ -20,6 +20,7 @@ public class RedirectClientThread extends Thread{
             e.printStackTrace();
         }
     }
+
     private Socket make_connection() {
         Socket clientSocket = null;
         try {
@@ -30,8 +31,9 @@ public class RedirectClientThread extends Thread{
         }
         return clientSocket;
     }
-    private void sendForward(String message){
-        System.out.println("Forwarding message "+message);
+
+    private void sendForward(String message) {
+        System.out.println("Forwarding message " + message);
         System.out.println("Making new connection");
         Socket clientSocket = make_connection();
         if (clientSocket != null) {
@@ -43,6 +45,7 @@ public class RedirectClientThread extends Thread{
             }
         }
     }
+
     public void run() {
         String line;
         while (true) {

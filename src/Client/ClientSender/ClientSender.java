@@ -9,8 +9,8 @@ import java.net.Socket;
 
 public class ClientSender extends Thread {
     private String targetHost;
-    private static final int PORT = 6789;
-    private static BufferedReader inFromUser;
+    private final int PORT = 6789;
+    private BufferedReader inFromUser;
 
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;

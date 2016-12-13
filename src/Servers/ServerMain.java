@@ -14,11 +14,13 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 public class ServerMain {
-    private static final int PORT = 6789;
-    private static String temp_host="127.0.0.1";;
-    private String nextHost="127.0.0.11";
+    private final int PORT = 6789;
+    private String temp_host = "127.0.0.1";
+    private String abc = "";
+    private String nextHost = "127.0.0.11";
+
     @Nullable
-    private static ServerSocket createServer() {
+    private ServerSocket createServer() {
         InetAddress address = null;
         try {
             address = InetAddress.getByName(temp_host);
@@ -35,8 +37,9 @@ public class ServerMain {
             return null;
         }
     }
+
     @Nullable
-    private static Socket makeConnectionSocket(ServerSocket serverSocket) {
+    private Socket makeConnectionSocket(ServerSocket serverSocket) {
 
         try {
             Socket connectionSocket = serverSocket.accept();
@@ -47,7 +50,8 @@ public class ServerMain {
             return null;
         }
     }
-    private static Socket makeSenderSocket(String host) {
+
+    private Socket makeSenderSocket(String host) {
         Socket clientSocket = null;
         try {
             clientSocket = new Socket(host, PORT);
@@ -57,8 +61,8 @@ public class ServerMain {
         }
         return clientSocket;
     }
-    private static void sendMessage(String host, String message)
-    {
+
+    private void sendMessage(String host, String message) {
         System.out.println("Making new connection");
         Socket clientSocket = makeSenderSocket(host);
         if (clientSocket != null) {
@@ -70,8 +74,13 @@ public class ServerMain {
             }
         }
     }
-    public static void main(String args[]){
+
+    public static void main(String args[]) {
         ServerMain srv = new ServerMain();
+        srv.run();
+    }
+
+    private void run() {
         String received_text;
         ServerSocket serverSocket = createServer();
         while (true) {
@@ -91,7 +100,7 @@ public class ServerMain {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
-                sendMessage(srv.nextHost,received_text);
+                sendMessage(nextHost, received_text);
             } else {
                 System.out.print("Client has disconnected");
                 break;

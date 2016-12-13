@@ -12,10 +12,10 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 public class ClientServer extends Thread {
-    private static final int PORT = 6789;
+    private final int PORT = 6789;
 
     @Nullable
-    private static ServerSocket createServer() {
+    private ServerSocket createServer() {
         InetAddress address = null;
         try {
             address = InetAddress.getByName("127.0.0.11");
@@ -34,7 +34,7 @@ public class ClientServer extends Thread {
     }
 
     @Nullable
-    private static Socket makeConnectionSocket(ServerSocket serverSocket) {
+    private Socket makeConnectionSocket(ServerSocket serverSocket) {
 
         try {
             Socket connectionSocket = serverSocket.accept();
