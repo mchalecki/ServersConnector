@@ -11,10 +11,12 @@ public class ClientSender extends Thread {
     private final int PORT = 6789;
     private BufferedReader inFromUser;
     private Socket clientSocket;
+    private Boolean quit;
 
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
+        quit = false;
     }
 
     private Socket make_connection() {
@@ -31,15 +33,32 @@ public class ClientSender extends Thread {
     /**
      * Logging to system as first connection.
      */
-    private void welcomeMessage() {
-        org.json.JSONObject obj = new org.json.JSONObject();
-        obj.put("type", 1);
-        obj.put("content", new org.json.JSONObject());
-        send_message(obj.toString());
+    private void welcomeMessage(String nick) {
+        org.json.JSONObject mes = new org.json.JSONObject();
+        org.json.JSONObject content = new org.json.JSONObject();
+        content.put("nick", nick);
+        mes.put("type", 1);
+        mes.put("content", content);
+        sendForward(mes.toString());
     }
 
-    private void send_message(String message) {
+    private void disconnectMessage() {
+        org.json.JSONObject mes = new org.json.JSONObject();
+        mes.put("type", 2);
+        mes.put("content", new org.json.JSONObject());
+        sendForward(mes.toString());
+    }
 
+    private void sendMessage(String message) {
+        org.json.JSONObject mes = new org.json.JSONObject();
+        org.json.JSONObject content = new org.json.JSONObject();
+        content.put("text", message);
+        mes.put("type", 3);
+        mes.put("content", content);
+        sendForward(mes.toString());
+    }
+
+    private void sendForward(String message) {
         if (clientSocket != null) {
             try {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -53,12 +72,18 @@ public class ClientSender extends Thread {
     public void run() {
         System.out.println("Making new connection");
         clientSocket = make_connection();
-        welcomeMessage();
-        while (true) {
+        welcomeMessage("adam");
+        while (!quit) {
             //GUI but now reading from console
             try {
                 String send_text = inFromUser.readLine();
-                send_message(send_text);
+                if (send_text.equals("q")) {
+                    quit = true;
+                    disconnectMessage();
+                    clientSocket.close();
+                    System.exit(0);
+                } else
+                    sendMessage(send_text);
             } catch (IOException e) {
                 System.out.println("Can't read from console");
             }
