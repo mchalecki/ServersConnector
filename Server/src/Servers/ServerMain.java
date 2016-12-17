@@ -18,8 +18,7 @@ import com.google.common.collect.HashBiMap;
 
 public class ServerMain {
     private final int PORT = 6789;
-    private String temp_my_inet = "127.0.0.1";
-    private String nextHost = "127.0.0.11";
+    private String nextHost = "192.168.1.192";
     private BiMap<String, String> users = HashBiMap.create();
 
 
@@ -58,14 +57,8 @@ public class ServerMain {
 
     @Nullable
     private ServerSocket createServer() {
-        InetAddress address = null;
         try {
-            address = InetAddress.getByName(temp_my_inet);
-        } catch (UnknownHostException e) {
-            System.out.println("Can't create inet address");
-        }
-        try {
-            ServerSocket serverSocket = new ServerSocket(PORT, 50, address);
+            ServerSocket serverSocket = new ServerSocket(PORT, 50);
             System.out.println("Created server");
             return serverSocket;
         } catch (IOException e) {
@@ -89,12 +82,6 @@ public class ServerMain {
 
     private Socket makeSenderSocket(String host) {
         System.out.println("Making new connection");
-        InetAddress address = null;
-        try {
-            address = InetAddress.getByName(temp_my_inet);
-        } catch (UnknownHostException e) {
-            System.out.println("Can't create inet address");
-        }
         Socket clientSocket = null;
         try {
             clientSocket = new Socket(host, PORT);

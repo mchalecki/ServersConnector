@@ -74,7 +74,7 @@ public class ClientSender extends Thread {
     public void run() {
         System.out.println("Making new connection");
         clientSocket = make_connection();
-        welcomeMessage("adam");
+        welcomeMessage("adam2");
         while (!quit) {
             //GUI but now reading from console
             try {

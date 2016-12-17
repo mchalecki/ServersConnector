@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 public class RedirectClientThread extends Thread {
     private Socket socket;
     private final int PORT_server = 6789;
-    private String temp_target_inet = "127.0.0.1";
+    private String temp_target = "192.168.1.10";
     private BufferedReader brinp = null;
 
     RedirectClientThread(Socket clientSocket) {
@@ -27,7 +27,7 @@ public class RedirectClientThread extends Thread {
         System.out.println("Making new connection");
         Socket clientSocket = null;
         try {
-            clientSocket = new Socket(temp_target_inet, PORT_server);
+            clientSocket = new Socket(temp_target, PORT_server);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println(e.toString());
