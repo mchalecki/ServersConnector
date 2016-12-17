@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientServer extends Thread {
     private final int PORT = 6789;
-
+    private String temp_my_inet = "127.0.0.11";
     @Nullable
     private ServerSocket createServer() {
         InetAddress address = null;
         try {
-            address = InetAddress.getByName("127.0.0.11");
+            address = InetAddress.getByName(temp_my_inet);
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }

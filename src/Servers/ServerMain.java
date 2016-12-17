@@ -18,7 +18,7 @@ import com.google.common.collect.HashBiMap;
 
 public class ServerMain {
     private final int PORT = 6789;
-    private String temp_host = "127.0.0.1";
+    private String temp_my_inet = "127.0.0.1";
     private String nextHost = "127.0.0.11";
     private BiMap<String, String> users = HashBiMap.create();
 
@@ -60,7 +60,7 @@ public class ServerMain {
     private ServerSocket createServer() {
         InetAddress address = null;
         try {
-            address = InetAddress.getByName(temp_host);
+            address = InetAddress.getByName(temp_my_inet);
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }
@@ -88,6 +88,13 @@ public class ServerMain {
     }
 
     private Socket makeSenderSocket(String host) {
+        System.out.println("Making new connection");
+        InetAddress address = null;
+        try {
+            address = InetAddress.getByName(temp_my_inet);
+        } catch (UnknownHostException e) {
+            System.out.println("Can't create inet address");
+        }
         Socket clientSocket = null;
         try {
             clientSocket = new Socket(host, PORT);
@@ -109,7 +116,7 @@ public class ServerMain {
                 deleteUser(obj);
                 break;
             case 3:
-                sendMessage(nextHost, message);
+                sendForwardMessage(message);
                 break;
         }
     }
@@ -120,6 +127,7 @@ public class ServerMain {
         String IP = message.getString("IP_from");
         String entry = users.get(nick);
         if (entry == null) users.put(nick, IP);
+        System.out.println("Added new user " + nick);
     }
 
     private void deleteUser(org.json.JSONObject message) {
@@ -128,8 +136,17 @@ public class ServerMain {
         if (entry != null) users.inverse().remove(IP);
     }
 
-    private void sendMessage(String host, String message) {
-        System.out.println("Making new connection");
+    private void sendForwardMessage(String message) {
+        String host;
+
+        if (nextHost == null) {
+            org.json.JSONObject obj = new org.json.JSONObject(message);
+            org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
+            System.out.println(content.toString());
+            String to = content.getString("to");
+            host = users.get(to);
+        } else
+            host = nextHost;
         Socket clientSocket = makeSenderSocket(host);
         if (clientSocket != null) {
             try {

@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class ClientSender extends Thread {
     private String targetHost;
-    private final int PORT = 6789;
+    private final int PORT_server = 6789;
     private BufferedReader inFromUser;
     private Socket clientSocket;
     private Boolean quit;
@@ -22,9 +22,10 @@ public class ClientSender extends Thread {
     private Socket make_connection() {
         Socket clientSocket = null;
         try {
-            clientSocket = new Socket(targetHost, PORT);
+            clientSocket = new Socket(targetHost, PORT_server);
             System.out.println("Connected");
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             System.out.println("Failed to makeConnectionSocket");
         }
         return clientSocket;
@@ -49,10 +50,11 @@ public class ClientSender extends Thread {
         sendForward(mes.toString());
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String message, String target) {
         org.json.JSONObject mes = new org.json.JSONObject();
         org.json.JSONObject content = new org.json.JSONObject();
         content.put("text", message);
+        content.put("to", target);
         mes.put("type", 3);
         mes.put("content", content);
         sendForward(mes.toString());
@@ -83,10 +85,15 @@ public class ClientSender extends Thread {
                     clientSocket.close();
                     System.exit(0);
                 } else
-                    sendMessage(send_text);
+                    sendMessage(send_text, "adam");
             } catch (IOException e) {
                 System.out.println("Can't read from console");
             }
+        }
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

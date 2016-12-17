@@ -10,12 +10,12 @@ import java.net.UnknownHostException;
 
 public class RedirectMain {
     private final int PORT = 6789;
-
+    private String temp_my_inet = "127.0.0.10";
     @Nullable
     private ServerSocket createServer() {
         InetAddress address = null;
         try {
-            address = InetAddress.getByName("127.0.0.10");
+            address = InetAddress.getByName(temp_my_inet);
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }

@@ -8,3 +8,4 @@ TODO.6 Refactor!
 TODO.7 Automate adding nextHost when connecting next servers.
 //TODO.8 To do 7 it has to have type in message. We want to connect redir to first srv. So srv must send type of mes to "connect" and then redir analyze and change.
 TODO.8 Handle the turn off accidents.
+sender has the same inet as server and it goes bad
