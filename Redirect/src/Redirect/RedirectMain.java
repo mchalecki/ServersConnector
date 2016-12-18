@@ -3,13 +3,12 @@ package Redirect;
 import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class RedirectMain {
     private final int PORT = 6789;
+    private static String version = "1.01";
 
     @Nullable
     private ServerSocket createServer() {
@@ -24,6 +23,7 @@ public class RedirectMain {
     }
 
     public static void main(String argv[]) throws IOException, InterruptedException {
+        System.out.println("Redirect main " + version);
         RedirectMain redir = new RedirectMain();
         redir.run();
     }

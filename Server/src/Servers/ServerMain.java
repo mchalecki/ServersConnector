@@ -7,10 +7,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.BiMap;
@@ -18,11 +16,13 @@ import com.google.common.collect.HashBiMap;
 
 public class ServerMain {
     private final int PORT = 6789;
+    private final int PORT_CLIENT = 6790;
     private String nextHost = "192.168.1.192";
     private BiMap<String, String> users = HashBiMap.create();
-
+    private static String version = "1.01";
 
     public static void main(String args[]) {
+        System.out.println("Server main " + version);
         ServerMain srv = new ServerMain();
         srv.run();
     }
@@ -83,8 +83,9 @@ public class ServerMain {
     private Socket makeSenderSocket(String host) {
         System.out.println("Making new connection");
         Socket clientSocket = null;
+        System.out.println(host + "|" + PORT_CLIENT);
         try {
-            clientSocket = new Socket(host, PORT);
+            clientSocket = new Socket(host, PORT_CLIENT);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");

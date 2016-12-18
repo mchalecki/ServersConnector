@@ -12,7 +12,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 public class ClientServer extends Thread {
-    private final int PORT = 6789;
+    private final int PORT = 6790;
+
     @Nullable
     private ServerSocket createServer() {
         try {
@@ -21,13 +22,13 @@ public class ClientServer extends Thread {
             return serverSocket;
         } catch (IOException e) {
             System.out.println("Cant create server");
+            System.out.println(e.getMessage());
             return null;
         }
     }
 
     @Nullable
     private Socket makeConnectionSocket(ServerSocket serverSocket) {
-
         try {
             Socket connectionSocket = serverSocket.accept();
             System.out.println("New client connected");
