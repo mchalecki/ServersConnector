@@ -16,8 +16,7 @@ import com.google.common.collect.HashBiMap;
 
 public class ServerMain {
     private final int PORT = 6789;
-    private final int PORT_CLIENT = 6790;
-    private String nextHost = "192.168.1.192";
+    private String nextHost = "192.168.1.193";
     private BiMap<String, String> users = HashBiMap.create();
     private static String version = "1.01";
 
@@ -83,9 +82,9 @@ public class ServerMain {
     private Socket makeSenderSocket(String host) {
         System.out.println("Making new connection");
         Socket clientSocket = null;
-        System.out.println(host + "|" + PORT_CLIENT);
+        System.out.println(host + "|" + PORT);
         try {
-            clientSocket = new Socket(host, PORT_CLIENT);
+            clientSocket = new Socket(host, PORT);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");

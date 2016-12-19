@@ -5,14 +5,12 @@ import com.sun.istack.internal.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 public class ClientServer extends Thread {
-    private final int PORT = 6790;
+    private final int PORT = 6789;
 
     @Nullable
     private ServerSocket createServer() {

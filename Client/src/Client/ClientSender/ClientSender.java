@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class ClientSender extends Thread {
     private String targetHost;
-    private final int PORT_server = 6789;
+    private final int PORT = 6789;
     private BufferedReader inFromUser;
     private Socket clientSocket;
     private Boolean quit;
@@ -22,7 +22,7 @@ public class ClientSender extends Thread {
     private Socket make_connection() {
         Socket clientSocket = null;
         try {
-            clientSocket = new Socket(targetHost, PORT_server);
+            clientSocket = new Socket(targetHost, PORT);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -74,7 +74,7 @@ public class ClientSender extends Thread {
     public void run() {
         System.out.println("Making new connection");
         clientSocket = make_connection();
-        welcomeMessage("adam2");
+        welcomeMessage("adam4");
         while (!quit) {
             //GUI but now reading from console
             try {
