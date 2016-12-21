@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class RedirectMain {
     private final int PORT = 6789;
-    private static String version = "1.01";
+    private static String version = "1.03";
 
     @Nullable
     private ServerSocket createServer() {

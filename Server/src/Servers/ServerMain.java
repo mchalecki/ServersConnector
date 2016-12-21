@@ -10,15 +10,17 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 public class ServerMain {
     private final int PORT = 6789;
-    private String nextHost = "192.168.1.193";
+    private String nextHost = null;// "172.17.0.4";
     private BiMap<String, String> users = HashBiMap.create();
-    private static String version = "1.01";
+    private static String version = "1.02";
 
     public static void main(String args[]) {
         System.out.println("Server main " + version);
@@ -79,12 +81,12 @@ public class ServerMain {
         }
     }
 
-    private Socket makeSenderSocket(String host) {
+    private Socket makeSenderSocket(String host, int PORT_next) {
         System.out.println("Making new connection");
         Socket clientSocket = null;
-        System.out.println(host + "|" + PORT);
+        System.out.println(host + "|" + PORT_next);
         try {
-            clientSocket = new Socket(host, PORT);
+            clientSocket = new Socket(host, PORT_next);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
@@ -120,21 +122,34 @@ public class ServerMain {
     private void deleteUser(org.json.JSONObject message) {
         String IP = message.getString("IP_from");
         String entry = users.inverse().get(IP);
-        if (entry != null) users.inverse().remove(IP);
+        if (entry != null) {
+            users.inverse().remove(IP);
+            System.out.println("Deleted user");
+        }
     }
 
     private void sendForwardMessage(String message) {
-        String host;
-
+        String host = null;
+        int port = 0;
         if (nextHost == null) {
             org.json.JSONObject obj = new org.json.JSONObject(message);
             org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
             System.out.println(content.toString());
             String to = content.getString("to");
-            host = users.get(to);
-        } else
+            System.out.println("User IP" + users.get(to));
+            String pattern = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}):(\\d{1,5})";
+            Pattern r = Pattern.compile(pattern);
+            Matcher m = r.matcher(users.get(to));
+            if (m.find()) {
+                System.out.println("IP: " + m.group(1));
+                host = m.group(1);
+                port = PORT;//Integer.parseInt(m.group(2));
+            } else System.out.println("No match");
+        } else {
             host = nextHost;
-        Socket clientSocket = makeSenderSocket(host);
+            port = PORT;
+        }
+        Socket clientSocket = makeSenderSocket(host, port);
         if (clientSocket != null) {
             try {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());

@@ -6,11 +6,12 @@ import java.net.Socket;
 public class RedirectClientThread extends Thread {
     private Socket socket;
     private final int PORT = 6789;
-    private String temp_target = "192.168.1.10";
+    private String temp_target = "172.17.0.3";
     private BufferedReader brinp = null;
 
     RedirectClientThread(Socket clientSocket) {
         System.out.println("New client");
+        System.out.println("IP's");
         socket = clientSocket;
         try {
             InputStream inp = socket.getInputStream();
