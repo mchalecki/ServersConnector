@@ -8,6 +8,6 @@ CMD ["java","-jar","/home/Client.jar"]
 #Rebuild
 #sudo docker build -t client .
 #run
-#sudo docker run -i -t --name client1 -p 192.168.1.193:6789:6789 client
+#sudo docker run -i -t --name client1 client
 #logs
 #sudo docker logs client1

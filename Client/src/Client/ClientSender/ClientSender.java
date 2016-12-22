@@ -1,5 +1,7 @@
 package Client.ClientSender;
 
+import tools.Tools;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -21,7 +23,7 @@ public class ClientSender extends Thread {
 
     public void run() {
         System.out.println("Making new connection");
-        clientSocket = make_connection();
+        clientSocket = Tools.connectTo(targetHost, PORT);
         welcomeMessage("adam");
         while (!quit) {
             //GUI but now reading from console
@@ -43,18 +45,6 @@ public class ClientSender extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private Socket make_connection() {
-        Socket clientSocket = null;
-        try {
-            clientSocket = new Socket(targetHost, PORT);
-            System.out.println("Connected");
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to makeConnectionSocket");
-        }
-        return clientSocket;
     }
 
     private void sendMessage(String message, String target) {
@@ -88,7 +78,7 @@ public class ClientSender extends Thread {
 
     private void sendForward(String message) {
         if (clientSocket == null)
-            clientSocket = make_connection();
+            clientSocket = Tools.connectTo(targetHost, PORT);
         try {
             DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
             outToServer.writeBytes(message + '\n');

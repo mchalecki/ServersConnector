@@ -56,20 +56,8 @@ public class ServerMain {
         sendToRedir(mes.toString());
     }
 
-    private Socket makeRedirConnection() {
-        Socket clientSocket = null;
-        try {
-            clientSocket = new Socket(redir_ip, PORT);
-            System.out.println("Connected");
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to makeConnectionSocket");
-        }
-        return clientSocket;
-    }
-
     private void sendToRedir(String message) {
-        Socket clientSocket = makeRedirConnection();
+        Socket clientSocket = Tools.connectTo(redir_ip, PORT);
         try {
             DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
             outToServer.writeBytes(message + '\n');
@@ -104,6 +92,9 @@ public class ServerMain {
                 break;
             case 3:
                 sendForwardMessage(message);
+                break;
+            case 4:
+                System.out.println("New srv wants to connect");
                 break;
         }
     }

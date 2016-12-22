@@ -52,4 +52,19 @@ public class Tools {
             return null;
         }
     }
+
+    /**
+     * Connects to server and returns that socket
+     */
+    public static Socket connectTo(String targetHost, int PORT) {
+        Socket clientSocket = null;
+        try {
+            clientSocket = new Socket(targetHost, PORT);
+            System.out.println("Connected");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to makeConnectionSocket");
+        }
+        return clientSocket;
+    }
 }
