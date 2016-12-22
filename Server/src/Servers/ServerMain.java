@@ -9,16 +9,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import tools.Tools;
+
 
 public class ServerMain {
     private final int PORT = 6789;
-    private String nextHost = null;// "172.17.0.4";
+    private final String redir_ip = "172.17.02";
+    private String nextHost = null;
     private BiMap<String, String> users = HashBiMap.create();
     private static String version = "1.02";
 
@@ -30,16 +32,13 @@ public class ServerMain {
 
     private void run() {
         String received_text;
+        sendConnectionMessageToRedir();
         ServerSocket serverSocket = createServer();
         while (true) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                System.out.println("Interrupted");
-            }
             Socket connectionSocket = makeConnectionSocket(serverSocket);
             received_text = null;
             try {
+                //This will return probably -1 if disconnection
                 BufferedReader inFromClient =
                         new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 received_text = inFromClient.readLine();
@@ -78,6 +77,35 @@ public class ServerMain {
         } catch (IOException e) {
             System.out.print("Can't tak user");
             return null;
+        }
+    }
+
+    private void sendConnectionMessageToRedir() {
+        org.json.JSONObject mes = new org.json.JSONObject();
+        mes.put("type", 4);
+        sendToRedir(mes.toString());
+    }
+
+    private Socket makeRedirConnection() {
+        Socket clientSocket = null;
+        try {
+            clientSocket = new Socket(redir_ip, PORT);
+            System.out.println("Connected");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to makeConnectionSocket");
+        }
+        return clientSocket;
+    }
+
+    private void sendToRedir(String message) {
+        Socket clientSocket = makeRedirConnection();
+        try {
+            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+            outToServer.writeBytes(message + '\n');
+            clientSocket.close();
+        } catch (IOException e) {
+            System.out.println("Can't send message");
         }
     }
 
@@ -130,26 +158,21 @@ public class ServerMain {
 
     private void sendForwardMessage(String message) {
         String host = null;
-        int port = 0;
         if (nextHost == null) {
             org.json.JSONObject obj = new org.json.JSONObject(message);
             org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
             System.out.println(content.toString());
             String to = content.getString("to");
-            System.out.println("User IP" + users.get(to));
-            String pattern = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}):(\\d{1,5})";
-            Pattern r = Pattern.compile(pattern);
-            Matcher m = r.matcher(users.get(to));
-            if (m.find()) {
-                System.out.println("IP: " + m.group(1));
-                host = m.group(1);
-                port = PORT;//Integer.parseInt(m.group(2));
+            System.out.println("User socket address" + users.get(to));
+            String IP = Tools.getIp(users.get(to));
+            if (IP != null) {
+                System.out.println("IP: " + IP);
+                host = IP;
             } else System.out.println("No match");
         } else {
             host = nextHost;
-            port = PORT;
         }
-        Socket clientSocket = makeSenderSocket(host, port);
+        Socket clientSocket = makeSenderSocket(host, PORT);
         if (clientSocket != null) {
             try {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
