@@ -1,6 +1,7 @@
 package Client.ClientServer;
 
 import com.sun.istack.internal.Nullable;
+import tools.Tools;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,41 +13,16 @@ import java.util.concurrent.TimeUnit;
 public class ClientServer extends Thread {
     private final int PORT = 6789;
 
-    @Nullable
-    private ServerSocket createServer() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(PORT, 50);
-            System.out.println("Created server");
-            return serverSocket;
-        } catch (IOException e) {
-            System.out.println("Cant create server");
-            System.out.println(e.getMessage());
-            return null;
-        }
-    }
-
-    @Nullable
-    private Socket makeConnectionSocket(ServerSocket serverSocket) {
-        try {
-            Socket connectionSocket = serverSocket.accept();
-            System.out.println("New client connected");
-            return connectionSocket;
-        } catch (IOException e) {
-            System.out.print("Can't tak user");
-            return null;
-        }
-    }
-
     public void run() {
         String received_text;
-        ServerSocket serverSocket = createServer();
+        ServerSocket serverSocket = Tools.createServer(PORT);
         while (true) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 System.out.println("Interrupted");
             }
-            Socket connectionSocket = makeConnectionSocket(serverSocket);
+            Socket connectionSocket = Tools.makeConnectionSocket(serverSocket);
             received_text = null;
             try {
                 BufferedReader inFromClient =

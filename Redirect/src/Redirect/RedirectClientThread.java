@@ -1,9 +1,8 @@
 package Redirect;
 
-import com.sun.security.ntlm.Client;
+
 import tools.Tools;
 
-import javax.tools.Tool;
 import java.io.*;
 import java.net.Socket;
 
@@ -73,11 +72,12 @@ public class RedirectClientThread extends Thread {
                     String from = obj.getString("IP_from");
                     nextHost = Tools.getIp(from);
                     System.out.println("New direct srv connected. System can work");
+                } else {
+                    sendForward(message);
+                    System.out.println("Forwarder request to connect srv");
                 }
-                System.out.println("New Server connected");
                 break;
             default:
-                System.out.println("NEXTHOST" + nextHost);
                 sendForward(message);
                 break;
         }

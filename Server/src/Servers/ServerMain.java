@@ -1,16 +1,11 @@
 package Servers;
 
-
-import com.sun.istack.internal.Nullable;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -22,7 +17,7 @@ public class ServerMain {
     private final String redir_ip = "172.17.02";
     private String nextHost = null;
     private BiMap<String, String> users = HashBiMap.create();
-    private static String version = "1.02";
+    private static String version = "1.03";
 
     public static void main(String args[]) {
         System.out.println("Server main " + version);
@@ -33,9 +28,9 @@ public class ServerMain {
     private void run() {
         String received_text;
         sendConnectionMessageToRedir();
-        ServerSocket serverSocket = createServer();
+        ServerSocket serverSocket = Tools.createServer(PORT);
         while (true) {
-            Socket connectionSocket = makeConnectionSocket(serverSocket);
+            Socket connectionSocket = Tools.makeConnectionSocket(serverSocket);
             received_text = null;
             try {
                 //This will return probably -1 if disconnection
@@ -52,31 +47,6 @@ public class ServerMain {
                 System.out.print("Client has disconnected");
                 break;
             }
-        }
-    }
-
-    @Nullable
-    private ServerSocket createServer() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(PORT, 50);
-            System.out.println("Created server");
-            return serverSocket;
-        } catch (IOException e) {
-            System.out.println("Cant create server");
-            return null;
-        }
-    }
-
-    @Nullable
-    private Socket makeConnectionSocket(ServerSocket serverSocket) {
-
-        try {
-            Socket connectionSocket = serverSocket.accept();
-            System.out.println("New client connected");
-            return connectionSocket;
-        } catch (IOException e) {
-            System.out.print("Can't tak user");
-            return null;
         }
     }
 
