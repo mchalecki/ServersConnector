@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -68,9 +70,8 @@ public class ServerMain {
     }
 
     private Socket makeSenderSocket(String host, int PORT_next) {
-        System.out.println("Making new connection");
+        System.out.println("Making new connection with " + host + ":" + PORT_next);
         Socket clientSocket = null;
-        System.out.println(host + "|" + PORT_next);
         try {
             clientSocket = new Socket(host, PORT_next);
             System.out.println("Connected");
@@ -86,17 +87,60 @@ public class ServerMain {
         switch (type) {
             case 1:
                 addUser(obj);
+                if (nextHost != null) sendForwardMessage(message);
                 break;
             case 2:
                 deleteUser(obj);
+                if (nextHost != null) sendForwardMessage(message);
                 break;
             case 3:
                 sendForwardMessage(message);
                 break;
             case 4:
-                System.out.println("New srv wants to connect");
+                manageAddingServer(message);
+                break;
+            case 5:
+                applySynchro(obj);
                 break;
         }
+    }
+
+    private void applySynchro(org.json.JSONObject message) {
+        System.out.println("Applying synchro = " + message.toString());
+        org.json.JSONObject content = new org.json.JSONObject(message.get("content").toString());
+        Iterator<String> keys = content.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            users.put(key, content.getString(key));
+        }
+
+    }
+
+    private void manageAddingServer(String message) {
+        System.out.println("New srv wants to connect");
+        if (nextHost == null) {
+            org.json.JSONObject obj = new org.json.JSONObject(message);
+            String newAddress = obj.getString("IP_from");
+            nextHost = Tools.getIp(newAddress);
+            System.out.println("New nextHost= " + nextHost);
+            synchroNewSrv();
+        } else {
+            System.out.println("Forwarding request to make new srv connection");
+            sendForwardMessage(message);
+        }
+    }
+
+    private void synchroNewSrv() {
+        org.json.JSONObject mes = new org.json.JSONObject();
+        org.json.JSONObject content = new org.json.JSONObject();
+        mes.put("type", 5);
+        for (Object o : users.entrySet()) {
+            Map.Entry pair = (Map.Entry) o;
+            content.put((String) pair.getKey(), pair.getValue());
+        }
+        mes.put("content", content);
+        System.out.println("Sending synchro message = " + mes.toString());
+        sendForwardMessage(mes.toString());
     }
 
     private void addUser(org.json.JSONObject message) {
@@ -105,11 +149,12 @@ public class ServerMain {
         String IP = message.getString("IP_from");
         String entry = users.get(nick);
         if (entry == null) users.put(nick, IP);
-        System.out.println("Added new user " + nick);
+        System.out.println("Added new user " + nick + "=" + IP);
     }
 
     private void deleteUser(org.json.JSONObject message) {
         String IP = message.getString("IP_from");
+        System.out.println("All users = " + users.toString());
         String entry = users.inverse().get(IP);
         if (entry != null) {
             users.inverse().remove(IP);
@@ -127,7 +172,6 @@ public class ServerMain {
             System.out.println("User socket address" + users.get(to));
             String IP = Tools.getIp(users.get(to));
             if (IP != null) {
-                System.out.println("IP: " + IP);
                 host = IP;
             } else System.out.println("No match");
         } else {

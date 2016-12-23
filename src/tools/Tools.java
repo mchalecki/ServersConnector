@@ -27,15 +27,15 @@ public class Tools {
      */
     @Nullable
     public static ServerSocket createServer(int PORT) {
+        ServerSocket serverSocket = null;
         try {
-            ServerSocket serverSocket = new ServerSocket(PORT, 50);
+            serverSocket = new ServerSocket(PORT, 50);
             System.out.println("Created server");
-            return serverSocket;
         } catch (IOException e) {
             System.out.println("Cant create server");
             System.out.println(e.getMessage());
-            return null;
         }
+        return serverSocket;
     }
 
     /**
@@ -43,19 +43,20 @@ public class Tools {
      */
     @Nullable
     public static Socket makeConnectionSocket(ServerSocket serverSocket) {
+        Socket connectionSocket = null;
         try {
-            Socket connectionSocket = serverSocket.accept();
+            connectionSocket = serverSocket.accept();
             System.out.println("New client connected");
-            return connectionSocket;
         } catch (IOException e) {
             System.out.print("Can't tak user");
-            return null;
         }
+        return connectionSocket;
     }
 
     /**
      * Connects to server and returns that socket
      */
+    @Nullable
     public static Socket connectTo(String targetHost, int PORT) {
         Socket clientSocket = null;
         try {
