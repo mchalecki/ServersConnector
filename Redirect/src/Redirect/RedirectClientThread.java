@@ -1,15 +1,19 @@
 package Redirect;
 
 
+import org.json.JSONObject;
 import tools.Tools;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class RedirectClientThread extends Thread {
-    private Socket socket;
-    private final int PORT = 6789;
     private static String nextHost = null;
+    private static ArrayList<String> servers = new ArrayList<>();
+    private final int PORT = 6789;
+    private Socket socket;
     private BufferedReader brinp = null;
 
     RedirectClientThread(Socket clientSocket) {
@@ -68,18 +72,42 @@ public class RedirectClientThread extends Thread {
         int type = obj.getInt("type");
         switch (type) {
             case 4:
-                if (nextHost == null) {
-                    String from = obj.getString("IP_from");
-                    nextHost = Tools.getIp(from);
-                    System.out.println("New direct srv connected. System can work");
-                } else {
-                    sendForward(message);
-                    System.out.println("Forwarder request to connect srv");
-                }
+                addNewSrv(obj);
+                break;
+            case 6:
+                handleBrokenConnection();
                 break;
             default:
                 sendForward(message);
                 break;
+        }
+    }
+
+    private void handleBrokenConnection() {
+        String ipOfBrokenConnection = Tools.getIp(socket.getRemoteSocketAddress().toString());
+        System.out.println("Received info of broken connection from " + ipOfBrokenConnection);
+        for (int i = 0; i < servers.size(); i++)
+            if (Objects.equals(servers.get(i), ipOfBrokenConnection)) {
+                for (int j = i + 2; j < servers.size(); j++)
+                    sendConnectAgainOrder(servers.get(j));
+                break;
+            }
+    }
+
+    private void sendConnectAgainOrder(String target) {
+        System.out.println("Sending order to connect again to " + target);
+    }
+
+    private void addNewSrv(JSONObject obj) {
+        String from = obj.getString("IP_from");
+        String ipOfNewSrv = Tools.getIp(from);
+        servers.add(ipOfNewSrv);
+        if (nextHost == null) {
+            nextHost = ipOfNewSrv;
+            System.out.println("New direct srv connected. System can work");
+        } else {
+            sendForward(obj.toString());
+            System.out.println("Forwarder request to connect srv");
         }
     }
 

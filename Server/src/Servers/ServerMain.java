@@ -1,25 +1,28 @@
 package Servers;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.sun.istack.internal.Nullable;
+import tools.Tools;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import tools.Tools;
-
 
 public class ServerMain {
+    private static String version = "1.09";
     private final int PORT = 6789;
+    private final int timeout = 2;
     private final String redir_ip = "172.17.02";
     private String nextHost = null;
     private BiMap<String, String> users = HashBiMap.create();
-    private static String version = "1.03";
 
     public static void main(String args[]) {
         System.out.println("Server main " + version);
@@ -69,16 +72,27 @@ public class ServerMain {
         }
     }
 
+    @Nullable
     private Socket makeSenderSocket(String host, int PORT_next) {
         System.out.println("Making new connection with " + host + ":" + PORT_next);
-        Socket clientSocket = null;
+        Socket clientSocket = new Socket();
         try {
-            clientSocket = new Socket(host, PORT_next);
+            //Trick to set timeout
+            clientSocket.connect(new InetSocketAddress(host, PORT_next), timeout);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
+            clientSocket = null;
+            sendBrokenConnectionInfo();
         }
         return clientSocket;
+    }
+
+    private void sendBrokenConnectionInfo() {
+        System.out.println("Sending info of broken connection");
+        org.json.JSONObject mes = new org.json.JSONObject();
+        mes.put("type", 6);
+        sendToRedir(mes.toString());
     }
 
     private void processMessage(String message) {
