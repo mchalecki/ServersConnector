@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import tools.Tools;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,15 +49,19 @@ public class RedirectClientThread extends Thread {
         }
     }
 
-    private Socket make_connection() {
-        System.out.println("Making new connection");
-        Socket clientSocket = null;
+    private Socket make_connection(String host, int PORT_next) {
+        System.out.println("Making new connection with " + host + ":" + PORT_next);
+        Socket clientSocket = new Socket();
         try {
-            clientSocket = new Socket(nextHost, PORT);
+            //Trick to set timeout
+            clientSocket.connect(new InetSocketAddress(host, PORT), 3);
             System.out.println("Connected");
         } catch (IOException e) {
-            System.out.println(e.toString());
             System.out.println("Failed to makeConnectionSocket");
+            clientSocket = null;
+            nextHost = null;
+            System.out.println("First is broken");
+            handleFirstBrokenConnection();
         }
         return clientSocket;
     }
@@ -88,14 +93,50 @@ public class RedirectClientThread extends Thread {
         System.out.println("Received info of broken connection from " + ipOfBrokenConnection);
         for (int i = 0; i < servers.size(); i++)
             if (Objects.equals(servers.get(i), ipOfBrokenConnection)) {
-                for (int j = i + 2; j < servers.size(); j++)
+                servers.remove(i + 1);
+                for (int j = i + 1; j < servers.size(); ) {
                     sendConnectAgainOrder(servers.get(j));
+                    servers.remove(j);
+                }
                 break;
             }
+        System.out.println("Servers after deleting broken ones " + servers.toString());
+    }
+
+    private void handleFirstBrokenConnection() {
+        System.out.println("Handling first broken srv");
+        servers.remove(0);
+        for (int j = 0; j < servers.size(); ) {
+            String tempSrvIp = servers.get(j);
+            servers.remove(j);
+            sendConnectAgainOrder(tempSrvIp);
+        }
     }
 
     private void sendConnectAgainOrder(String target) {
         System.out.println("Sending order to connect again to " + target);
+        org.json.JSONObject mes = new org.json.JSONObject();
+        mes.put("type", 7);
+        sendTo(target, PORT, mes.toString());
+    }
+
+    private void sendTo(String target, int PORT, String message) {
+        System.out.println("Sending to:" + target + " message=" + message);
+        Socket clientSocket = make_connection(target, PORT);
+        if (clientSocket != null) {
+            try {
+                DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                outToServer.writeBytes(message + '\n');
+            } catch (IOException e) {
+                System.out.println("Can't send message");
+            }
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     private void addNewSrv(JSONObject obj) {
@@ -112,21 +153,6 @@ public class RedirectClientThread extends Thread {
     }
 
     private void sendForward(String message) {
-        System.out.println("Forwarding message " + message);
-        Socket clientSocket = make_connection();
-        if (clientSocket != null) {
-            try {
-                DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-                outToServer.writeBytes(message + '\n');
-            } catch (IOException e) {
-                System.out.println("Can't send message");
-            }
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-            }
-        }
+        sendTo(nextHost, PORT, message);
     }
 }

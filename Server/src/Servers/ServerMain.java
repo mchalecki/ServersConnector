@@ -56,6 +56,7 @@ public class ServerMain {
     }
 
     private void sendConnectionMessageToRedir() {
+        nextHost = null;
         org.json.JSONObject mes = new org.json.JSONObject();
         mes.put("type", 4);
         sendToRedir(mes.toString());
@@ -83,6 +84,7 @@ public class ServerMain {
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
             clientSocket = null;
+            nextHost = null;
             sendBrokenConnectionInfo();
         }
         return clientSocket;
@@ -116,11 +118,18 @@ public class ServerMain {
             case 5:
                 applySynchro(obj);
                 break;
+            case 7:
+                sendConnectionMessageToRedir();
+                break;
+            default:
+                System.out.println(message);
+                break;
         }
     }
 
     private void applySynchro(org.json.JSONObject message) {
         System.out.println("Applying synchro = " + message.toString());
+        users.clear();
         org.json.JSONObject content = new org.json.JSONObject(message.get("content").toString());
         Iterator<String> keys = content.keys();
         while (keys.hasNext()) {
@@ -200,5 +209,7 @@ public class ServerMain {
                 System.out.println("Can't send message");
             }
         }
+        //This is called after sending info of broken connection. This goes again to redir to follow new path after pixing it
+        else sendToRedir(message);
     }
 }
