@@ -3,8 +3,6 @@ package Client;
 import Client.ClientSender.ClientSender;
 import Client.ClientServer.ClientServer;
 
-import javax.swing.*;
-
 public class ClientMain {
     public static void main(String args[]) {
         ClientServer srv = new ClientServer();
