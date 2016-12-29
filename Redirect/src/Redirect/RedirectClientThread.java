@@ -14,6 +14,7 @@ public class RedirectClientThread extends Thread {
     private static String nextHost = null;
     private static ArrayList<String> servers = new ArrayList<>();
     private final int PORT = 6789;
+    private final int timeout = 3;
     private Socket socket;
     private BufferedReader brinp = null;
 
@@ -54,7 +55,7 @@ public class RedirectClientThread extends Thread {
         Socket clientSocket = new Socket();
         try {
             //Trick to set timeout
-            clientSocket.connect(new InetSocketAddress(host, PORT), 3);
+            clientSocket.connect(new InetSocketAddress(host, PORT), timeout);
             System.out.println("Connected");
         } catch (IOException e) {
             System.out.println("Failed to makeConnectionSocket");
@@ -83,6 +84,7 @@ public class RedirectClientThread extends Thread {
                 handleBrokenConnection();
                 break;
             default:
+                System.out.println("All servers=" + servers.toString());
                 sendForward(message);
                 break;
         }
@@ -105,6 +107,7 @@ public class RedirectClientThread extends Thread {
 
     private void handleFirstBrokenConnection() {
         System.out.println("Handling first broken srv");
+        System.out.println("HER=" + servers.toString());
         servers.remove(0);
         for (int j = 0; j < servers.size(); ) {
             String tempSrvIp = servers.get(j);
@@ -136,6 +139,18 @@ public class RedirectClientThread extends Thread {
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
+        } else {
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            System.out.println("Sent using task after 1s");
+                            if (nextHost != null)
+                                sendForward(message);
+                        }
+                    },
+                    1000
+            );
         }
     }
 
