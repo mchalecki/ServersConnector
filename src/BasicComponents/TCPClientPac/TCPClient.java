@@ -1,19 +1,62 @@
 package BasicComponents.TCPClientPac;
 
+import Client.GUI.ChatFrame;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-class TCPClient {
+class TCPClient extends JFrame{
     private static boolean exit;
     private static BufferedReader inFromUser;
+    static JFrame ChatFrame = new JFrame("Chat");
+    static JTextArea ChatBox;
+    static JTextField WriteMessageBox;
+    static JButton SendMessageButton;
 
     private TCPClient() {
         exit = false;
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
+      JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel downPanel = new JPanel();
+        downPanel.setLayout(new GridBagLayout());
+
+        WriteMessageBox = new JTextField();
+        WriteMessageBox.addKeyListener(new ChatFrame.SendMessageListener());
+
+        SendMessageButton = new JButton("Send Message!");
+        SendMessageButton.addActionListener(new ChatFrame.SendMessageListener());
+
+        ChatBox = new JTextArea();
+        ChatBox.setEditable(false);
+        ChatBox.setLineWrap(true);
+
+        mainPanel.add(new JScrollPane(ChatBox), BorderLayout.CENTER);
+
+        GridBagConstraints left = new GridBagConstraints();
+        left.fill = GridBagConstraints.HORIZONTAL;
+        left.weightx = 150;
+
+        GridBagConstraints right = new GridBagConstraints();
+
+        downPanel.add(WriteMessageBox, left);
+        downPanel.add(SendMessageButton, right);
+
+        mainPanel.add(BorderLayout.SOUTH, downPanel);
+
+        ChatFrame.add(mainPanel);
+        ChatFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ChatFrame.setSize(500, 300);
+        ChatFrame.setLocation(300, 100);
+        ChatFrame.setVisible(true);
     }
 
     private static Socket make_connection(String host) {
@@ -82,4 +125,6 @@ class TCPClient {
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
         outToServer.writeBytes(send_text + '\n');
     }
+    
+    
 }
