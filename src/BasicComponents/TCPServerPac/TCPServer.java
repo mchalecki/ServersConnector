@@ -1,12 +1,60 @@
 package BasicComponents.TCPServerPac;
 
+import Client.GUI.ChatFrame;
 import com.sun.istack.internal.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.io.*;
 import java.net.*;
 
-class TCPServer {
+class TCPServer extends JFrame{
     private static final int PORT = 6789;
+    
+    static JFrame ChatFrame = new JFrame("Chat");
+    static JTextArea ChatBox;
+    static JTextField WriteMessageBox;
+    static JButton SendMessageButton;
+    
+    public TCPServer()
+    {
+         JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel downPanel = new JPanel();
+        downPanel.setLayout(new GridBagLayout());
+
+        WriteMessageBox = new JTextField();
+        WriteMessageBox.addKeyListener(new ChatFrame.SendMessageListener());
+
+        SendMessageButton = new JButton("Send Message!");
+        SendMessageButton.addActionListener(new ChatFrame.SendMessageListener());
+
+        ChatBox = new JTextArea();
+        ChatBox.setEditable(false);
+        ChatBox.setLineWrap(true);
+
+        mainPanel.add(new JScrollPane(ChatBox), BorderLayout.CENTER);
+
+        GridBagConstraints left = new GridBagConstraints();
+        left.fill = GridBagConstraints.HORIZONTAL;
+        left.weightx = 150;
+
+        GridBagConstraints right = new GridBagConstraints();
+
+        downPanel.add(WriteMessageBox, left);
+        downPanel.add(SendMessageButton, right);
+
+        mainPanel.add(BorderLayout.SOUTH, downPanel);
+
+        ChatFrame.add(mainPanel);
+        ChatFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ChatFrame.setSize(500, 300);
+        ChatFrame.setLocation(300, 100);
+        ChatFrame.setVisible(true);
+    }
 
     @Nullable
     private static ServerSocket createServer() {
@@ -46,3 +94,4 @@ class TCPServer {
 
     }
 }
+
