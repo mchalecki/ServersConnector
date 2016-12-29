@@ -72,7 +72,7 @@ public class ChatFrame extends JFrame
 
                 //send_message(send_text);
 
-                ChatBox.append("<username>:  " + WriteMessageBox.getText() + "\n");
+                ChatBox.append("<username>:  " + send_text + "\n");
                 WriteMessageBox.setText("");
             }
             WriteMessageBox.requestFocusInWindow();
