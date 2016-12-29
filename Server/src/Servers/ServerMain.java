@@ -210,6 +210,17 @@ public class ServerMain {
             }
         }
         //This is called after sending info of broken connection. This goes again to redir to follow new path after pixing it
-        else sendToRedir(message);
+        else {
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            System.out.println("Using task");
+                            sendToRedir(message);
+                        }
+                    },
+                    1000
+            );
+        }
     }
 }
