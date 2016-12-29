@@ -12,13 +12,13 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 public class ClientServer extends Thread {
-    private static final int PORT = 6789;
-
+    private final int PORT = 6789;
+    private String temp_my_inet = "127.0.0.11";
     @Nullable
-    private static ServerSocket createServer() {
+    private ServerSocket createServer() {
         InetAddress address = null;
         try {
-            address = InetAddress.getByName("127.0.0.11");
+            address = InetAddress.getByName(temp_my_inet);
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }
@@ -34,7 +34,7 @@ public class ClientServer extends Thread {
     }
 
     @Nullable
-    private static Socket makeConnectionSocket(ServerSocket serverSocket) {
+    private Socket makeConnectionSocket(ServerSocket serverSocket) {
 
         try {
             Socket connectionSocket = serverSocket.accept();

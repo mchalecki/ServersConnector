@@ -1,13 +1,15 @@
 package Redirect;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class RedirectClientThread extends Thread{
+public class RedirectClientThread extends Thread {
     private Socket socket;
-    private static final int PORT = 6789;
+    private final int PORT_server = 6789;
+    private String temp_target_inet = "127.0.0.1";
     private BufferedReader brinp = null;
-    private String targetHost="127.0.0.1";
 
     RedirectClientThread(Socket clientSocket) {
         System.out.println("New client");
@@ -20,19 +22,28 @@ public class RedirectClientThread extends Thread{
             e.printStackTrace();
         }
     }
+
     private Socket make_connection() {
+        System.out.println("Making new connection");
         Socket clientSocket = null;
         try {
-            clientSocket = new Socket(targetHost, PORT);
+            clientSocket = new Socket(temp_target_inet, PORT_server);
             System.out.println("Connected");
         } catch (IOException e) {
+            System.out.println(e.toString());
             System.out.println("Failed to makeConnectionSocket");
         }
         return clientSocket;
     }
-    private void sendForward(String message){
-        System.out.println("Forwarding message "+message);
-        System.out.println("Making new connection");
+
+    private void processMessage(String message) {
+        org.json.JSONObject obj = new org.json.JSONObject(message);
+        obj.put("IP_from", socket.getRemoteSocketAddress().toString());
+        sendForward(obj.toString());
+    }
+
+    private void sendForward(String message) {
+        System.out.println("Forwarding message " + message);
         Socket clientSocket = make_connection();
         if (clientSocket != null) {
             try {
@@ -41,8 +52,15 @@ public class RedirectClientThread extends Thread{
             } catch (IOException e) {
                 System.out.println("Can't send message");
             }
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
+
     public void run() {
         String line;
         while (true) {
@@ -53,7 +71,7 @@ public class RedirectClientThread extends Thread{
                     socket.close();
                     return;
                 } else {
-                    sendForward(line);
+                    processMessage(line);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

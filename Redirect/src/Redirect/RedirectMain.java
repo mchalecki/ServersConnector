@@ -9,18 +9,18 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class RedirectMain {
-    private static final int PORT = 6789;
+    private final int PORT = 6789;
+    private String temp_my_inet = "127.0.0.10";
 
     @Nullable
-    private static ServerSocket createServer() {
+    private ServerSocket createServer() {
         InetAddress address = null;
         try {
-            address = InetAddress.getByName("127.0.0.10");
+            address = InetAddress.getByName(temp_my_inet);
         } catch (UnknownHostException e) {
             System.out.println("Can't create inet address");
         }
         try {
-
             ServerSocket serverSocket = new ServerSocket(PORT, 50, address);
             System.out.println("Created server");
             return serverSocket;
@@ -31,10 +31,11 @@ public class RedirectMain {
     }
 
     public static void main(String argv[]) throws IOException, InterruptedException {
-        run();
+        RedirectMain redir = new RedirectMain();
+        redir.run();
     }
 
-    private static void run() throws InterruptedException, IOException {
+    private void run() throws InterruptedException, IOException {
         Socket socket = null;
         ServerSocket serverSocket = createServer();
 
