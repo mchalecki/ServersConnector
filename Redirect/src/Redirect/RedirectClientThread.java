@@ -84,7 +84,6 @@ public class RedirectClientThread extends Thread {
                 handleBrokenConnection();
                 break;
             default:
-                System.out.println("All servers=" + servers.toString());
                 sendForward(message);
                 break;
         }
