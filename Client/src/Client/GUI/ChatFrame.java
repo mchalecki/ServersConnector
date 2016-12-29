@@ -62,7 +62,7 @@ public class ChatFrame extends JFrame
         ChatFrame.setVisible(true);
     }
 
-    class SendMessageListener implements ActionListener, KeyListener
+    public static class SendMessageListener implements ActionListener, KeyListener
     {
         public void actionPerformed(ActionEvent event)
         {
