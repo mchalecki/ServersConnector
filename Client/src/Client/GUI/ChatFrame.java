@@ -10,19 +10,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class ChatFrame extends JFrame
 {
-    public static JFrame ChatFrame = new JFrame("Chat");
+    private static JFrame ChatFrame = new JFrame("Chat");
     public static JTextArea ChatBox;
-    public static JTextField WriteMessageBox;
-    public static JButton SendMessageButton;
+    private static JTextField WriteMessageBox;
+    private static JButton SendMessageButton;
 
     public static ClientSender client;
 
@@ -58,7 +53,7 @@ public class ChatFrame extends JFrame
         mainPanel.add(BorderLayout.SOUTH, downPanel);
 
         ChatFrame.add(mainPanel);
-        ChatFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ChatFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         ChatFrame.setSize(500, 300);
         ChatFrame.setLocation(300, 100);
         ChatFrame.setVisible(true);
@@ -86,7 +81,7 @@ public class ChatFrame extends JFrame
         }
     }
 
-    public void sendMessageGUI()
+    private void sendMessageGUI()
     {
         if (WriteMessageBox.getText().length() >= 1)
         {
