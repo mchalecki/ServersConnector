@@ -1,5 +1,7 @@
 package Client.ClientSender;
 
+import Client.GUI.ChatFrame;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +15,8 @@ public class ClientSender extends Thread {
     private Socket clientSocket;
     private Boolean quit;
 
+    public ChatFrame gui;
+
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -24,6 +28,7 @@ public class ClientSender extends Thread {
         try {
             clientSocket = new Socket(targetHost, PORT_server);
             System.out.println("Connected");
+            gui.ChatBox.append("Connected \n");
         } catch (IOException e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to makeConnectionSocket");
@@ -50,7 +55,7 @@ public class ClientSender extends Thread {
         sendForward(mes.toString());
     }
 
-    private void sendMessage(String message, String target) {
+    public void sendMessage(String message, String target) {
         org.json.JSONObject mes = new org.json.JSONObject();
         org.json.JSONObject content = new org.json.JSONObject();
         content.put("text", message);
@@ -73,10 +78,11 @@ public class ClientSender extends Thread {
 
     public void run() {
         System.out.println("Making new connection");
+        gui.ChatBox.append("Making new connection \n");
+
         clientSocket = make_connection();
         welcomeMessage("adam");
         while (!quit) {
-            //GUI but now reading from console
             try {
                 String send_text = inFromUser.readLine();
                 if (send_text.equals("q")) {

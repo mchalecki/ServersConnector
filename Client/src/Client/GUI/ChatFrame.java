@@ -1,5 +1,7 @@
 package Client.GUI;
 
+import Client.ClientSender.ClientSender;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.EventQueue;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,11 +19,12 @@ import javax.swing.JTextField;
 
 public class ChatFrame extends JFrame
 {
-    static JFrame ChatFrame = new JFrame("Chat");
+    public static JFrame ChatFrame = new JFrame("Chat");
+    public static JTextArea ChatBox;
+    public static JTextField WriteMessageBox;
+    public static JButton SendMessageButton;
 
-    static JTextArea ChatBox;
-    static JTextField WriteMessageBox;
-    static JButton SendMessageButton;
+    public static ClientSender client;
 
     public ChatFrame()
     {
@@ -62,36 +64,18 @@ public class ChatFrame extends JFrame
         ChatFrame.setVisible(true);
     }
 
-    public static class SendMessageListener implements ActionListener, KeyListener
+    public class SendMessageListener implements ActionListener, KeyListener
     {
         public void actionPerformed(ActionEvent event)
         {
-            if (WriteMessageBox.getText().length() >= 1)
-            {
-                String send_text = WriteMessageBox.getText();
-
-                //send_message(send_text);
-
-                ChatBox.append("<username>:  " + send_text + "\n");
-                WriteMessageBox.setText("");
-            }
-            WriteMessageBox.requestFocusInWindow();
+            sendMessageGUI();
         }
 
         public void keyPressed(KeyEvent event)
         {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
             {
-                if (WriteMessageBox.getText().length() >= 1)
-                {
-                    String send_text = WriteMessageBox.getText();
-
-                    //send_message(send_text);
-
-                    ChatBox.append("<username>:  " + send_text + "\n");
-                    WriteMessageBox.setText("");
-                }
-                WriteMessageBox.requestFocusInWindow();
+                sendMessageGUI();
             }
         }
 
@@ -100,18 +84,19 @@ public class ChatFrame extends JFrame
 
         public void keyTyped(KeyEvent e) {
         }
-
     }
 
-
-    public static void main(String[] args)
+    public void sendMessageGUI()
     {
-        EventQueue.invokeLater(new Runnable()
+        if (WriteMessageBox.getText().length() >= 1)
         {
-            public void run()
-            {
-                new ChatFrame();
-            }
-        });
+            String send_text = WriteMessageBox.getText();
+
+            client.sendMessage(send_text, "adam");
+
+            ChatBox.append("<username>:  " + send_text + "\n");
+            WriteMessageBox.setText("");
+        }
+        WriteMessageBox.requestFocusInWindow();
     }
 }

@@ -13,10 +13,10 @@ import java.net.*;
 class TCPServer extends JFrame{
     private static final int PORT = 6789;
     
-    static JFrame ChatFrame = new JFrame("Chat");
-    static JTextArea ChatBox;
-    static JTextField WriteMessageBox;
-    static JButton SendMessageButton;
+    private static JFrame ChatFrame = new JFrame("Chat");
+    private static JTextArea ChatBox;
+    private static JTextField WriteMessageBox;
+    private static JButton SendMessageButton;
     
     public TCPServer()
     {
@@ -27,10 +27,10 @@ class TCPServer extends JFrame{
         downPanel.setLayout(new GridBagLayout());
 
         WriteMessageBox = new JTextField();
-        WriteMessageBox.addKeyListener(new ChatFrame.SendMessageListener());
+
 
         SendMessageButton = new JButton("Send Message!");
-        SendMessageButton.addActionListener(new ChatFrame.SendMessageListener());
+
 
         ChatBox = new JTextArea();
         ChatBox.setEditable(false);

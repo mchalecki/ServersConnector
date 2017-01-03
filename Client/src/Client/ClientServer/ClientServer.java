@@ -11,9 +11,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
+import Client.GUI.ChatFrame;
+
 public class ClientServer extends Thread {
     private final int PORT = 6789;
     private String temp_my_inet = "127.0.0.11";
+    public ChatFrame gui;
     @Nullable
     private ServerSocket createServer() {
         InetAddress address = null;
@@ -26,6 +29,7 @@ public class ClientServer extends Thread {
 
             ServerSocket serverSocket = new ServerSocket(PORT, 50, address);
             System.out.println("Created server");
+            gui.ChatBox.append("Created server \n");
             return serverSocket;
         } catch (IOException e) {
             System.out.println("Cant create server");
@@ -39,6 +43,7 @@ public class ClientServer extends Thread {
         try {
             Socket connectionSocket = serverSocket.accept();
             System.out.println("New client connected");
+            gui.ChatBox.append("New client connected \n");
             return connectionSocket;
         } catch (IOException e) {
             System.out.print("Can't tak user");
@@ -66,6 +71,7 @@ public class ClientServer extends Thread {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
+                gui.ChatBox.append("Received: " + received_text);
             } else {
                 System.out.print("Client has disconnected");
                 break;

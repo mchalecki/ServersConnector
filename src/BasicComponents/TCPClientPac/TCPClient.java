@@ -30,10 +30,10 @@ class TCPClient extends JFrame{
         downPanel.setLayout(new GridBagLayout());
 
         WriteMessageBox = new JTextField();
-        WriteMessageBox.addKeyListener(new ChatFrame.SendMessageListener());
+
 
         SendMessageButton = new JButton("Send Message!");
-        SendMessageButton.addActionListener(new ChatFrame.SendMessageListener());
+
 
         ChatBox = new JTextArea();
         ChatBox.setEditable(false);
