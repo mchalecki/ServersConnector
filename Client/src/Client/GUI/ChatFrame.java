@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 
 public class ChatFrame extends JFrame
 {
@@ -40,6 +41,8 @@ public class ChatFrame extends JFrame
         ChatBox.setLineWrap(true);
 
         mainPanel.add(new JScrollPane(ChatBox), BorderLayout.CENTER);
+        DefaultCaret caret = (DefaultCaret)ChatBox.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         GridBagConstraints left = new GridBagConstraints();
         left.fill = GridBagConstraints.HORIZONTAL;
