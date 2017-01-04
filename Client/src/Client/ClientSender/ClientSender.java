@@ -16,6 +16,7 @@ public class ClientSender extends Thread {
     private Boolean quit;
 
     public ChatFrame gui;
+    public String Nick;
 
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;

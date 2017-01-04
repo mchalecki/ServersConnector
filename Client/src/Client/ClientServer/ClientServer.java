@@ -43,7 +43,7 @@ public class ClientServer extends Thread {
         try {
             Socket connectionSocket = serverSocket.accept();
             System.out.println("New client connected");
-            gui.ChatBox.append("New client connected \n");
+            //gui.ChatBox.append("New client connected \n");
             return connectionSocket;
         } catch (IOException e) {
             System.out.print("Can't tak user");
