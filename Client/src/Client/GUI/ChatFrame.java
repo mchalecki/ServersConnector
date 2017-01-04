@@ -13,12 +13,15 @@ import java.awt.event.KeyListener;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
-public class ChatFrame extends JFrame
+public class ChatFrame
 {
     private static JFrame ChatFrame = new JFrame("Chat");
     public static JTextArea ChatBox;
     private static JTextField WriteMessageBox;
     private static JButton SendMessageButton;
+
+    private String Nick;
+    private String Address;
 
     public static ClientSender client;
 
@@ -59,7 +62,7 @@ public class ChatFrame extends JFrame
         ChatFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         ChatFrame.setSize(500, 300);
         ChatFrame.setLocation(300, 100);
-        ChatFrame.setVisible(true);
+        ChatFrame.setVisible(false);
     }
 
     public class SendMessageListener implements ActionListener, KeyListener
@@ -92,9 +95,16 @@ public class ChatFrame extends JFrame
 
             client.sendMessage(send_text, "adam");
 
-            ChatBox.append("<username>:  " + send_text + "\n");
+            ChatBox.append("\n" + Nick + " > " + send_text + "\n");
             WriteMessageBox.setText("");
         }
         WriteMessageBox.requestFocusInWindow();
+    }
+
+    public void getInformation(String Nick, String Address)
+    {
+        this.Nick = Nick;
+        this.Address = Address;
+        ChatFrame.setVisible(true);
     }
 }
