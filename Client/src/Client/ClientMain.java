@@ -14,6 +14,8 @@ public class ClientMain {
         ClientServer srv = new ClientServer();
         ClientSender sender = new ClientSender("127.0.0.10");
 
+        firstframe.srv = srv;
+        firstframe.sender = sender;
         chatframe.client = sender;
         srv.gui = chatframe;
         sender.gui = chatframe;

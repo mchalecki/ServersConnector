@@ -22,6 +22,9 @@ public class FirstFrame extends JFrame {
     private static JTextField AddressBox;
     private static JButton EnterButton;
 
+    public ClientServer srv;
+    public ClientSender sender;
+
     public String Nick;
     public String Address;
 
@@ -105,6 +108,7 @@ public class FirstFrame extends JFrame {
         public void actionPerformed(ActionEvent event)
         {
             SetInformation();
+            sender.welcomeMessage(Nick);
         }
 
         public void keyPressed(KeyEvent event)
@@ -112,6 +116,7 @@ public class FirstFrame extends JFrame {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
             {
                 SetInformation();
+                sender.welcomeMessage(Nick);
             }
         }
 

@@ -16,7 +16,6 @@ public class ClientSender extends Thread {
     private Boolean quit;
 
     public ChatFrame gui;
-    public String Nick;
 
     public ClientSender(String targetHost) {
         this.targetHost = targetHost;
@@ -40,7 +39,7 @@ public class ClientSender extends Thread {
     /**
      * Logging to system as first connection.
      */
-    private void welcomeMessage(String nick) {
+    public void welcomeMessage(String nick) {
         org.json.JSONObject mes = new org.json.JSONObject();
         org.json.JSONObject content = new org.json.JSONObject();
         content.put("nick", nick);
@@ -82,7 +81,7 @@ public class ClientSender extends Thread {
         gui.ChatBox.append("Making new connection \n");
 
         clientSocket = make_connection();
-        welcomeMessage("adam");
+        //welcomeMessage("adam");
         while (!quit) {
             try {
                 String send_text = inFromUser.readLine();
