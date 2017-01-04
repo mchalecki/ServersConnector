@@ -13,32 +13,26 @@ import java.awt.event.KeyListener;
 public class FirstFrame extends JFrame {
 
     public ChatFrame chatframe;
+    public ClientServer srv;
+    public ClientSender sender;
+
     private static JFrame FirstFrame = new JFrame("Chat");
-   // private static JLabel WelcomeLabel1;
-    private static JLabel WelcomeLabel2;
+    private static JLabel WelcomeLabel;
     private static JLabel NickLabel;
     private static JLabel AddressLabel;
     private static JTextField NickBox;
     private static JTextField AddressBox;
     private static JButton EnterButton;
 
-    public ClientServer srv;
-    public ClientSender sender;
-
     public String Nick;
     public String Address;
 
     public FirstFrame() {
-
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new GridBagLayout());
 
-        /*WelcomeLabel1 = new JLabel("ELO");
-        WelcomeLabel1.setFont(new Font("Serif", Font.BOLD, 28));
-        WelcomeLabel1.setHorizontalAlignment(JLabel.CENTER);*/
-
-        WelcomeLabel2 = new JLabel("Enter nick and address");
-        WelcomeLabel2.setFont(new Font("Serif", Font.BOLD, 18));
+        WelcomeLabel = new JLabel("Enter nick and address");
+        WelcomeLabel.setFont(new Font("Serif", Font.BOLD, 18));
 
         NickLabel = new JLabel("Nick: ");
         NickLabel.setFont(new Font("Serif", Font.BOLD, 15));
@@ -89,7 +83,7 @@ public class FirstFrame extends JFrame {
         button.insets = new Insets(30,0,0,0);
         button.gridwidth = 2;
 
-        centerPanel.add(WelcomeLabel2, welcome);
+        centerPanel.add(WelcomeLabel, welcome);
         centerPanel.add(NickLabel, nick);
         centerPanel.add(AddressLabel, adrs);
         centerPanel.add(NickBox, nickbox);
@@ -133,22 +127,9 @@ public class FirstFrame extends JFrame {
             if(AddressBox.getText().length() >= 1) {
                 Nick = NickBox.getText();
                 Address = AddressBox.getText();
-
                 chatframe.getInformation(Nick, Address);
                 FirstFrame.setVisible(false);
             }
         }
     }
-
-    private org.json.JSONObject AddNewUser(String Nick, String Address) {
-
-        org.json.JSONObject mes = new org.json.JSONObject();
-        org.json.JSONObject content = new org.json.JSONObject();
-        content.put("nick", Nick);
-        mes.put("type", 1);
-        mes.put("content", content);
-        mes.put("IP_from", Address);
-        return mes;
-    }
 }
-
