@@ -11,6 +11,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -96,6 +99,17 @@ public class ChatFrame extends JFrame
         ChatFrame.setSize(500, 300);
         ChatFrame.setLocation(300, 100);
         ChatFrame.setVisible(false);
+
+        ChatFrame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e) {
+                sender.disconnectMessage();
+                try {
+                    sender.clientSocket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
 
         //ONLY TO CHECK!!!

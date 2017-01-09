@@ -48,7 +48,7 @@ public class ClientSender extends Thread {
         sendForward(mes.toString());
     }
 
-    private void disconnectMessage() {
+    public void disconnectMessage() {
         org.json.JSONObject mes = new org.json.JSONObject();
         mes.put("type", 2);
         mes.put("content", new org.json.JSONObject());
