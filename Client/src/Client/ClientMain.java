@@ -7,19 +7,21 @@ import Client.GUI.FirstFrame;
 
 public class ClientMain {
     public static void main(String args[]) {
+
         FirstFrame firstframe = new FirstFrame();
+
         ChatFrame chatframe = new ChatFrame();
         firstframe.chatframe = chatframe;
 
         ClientServer srv = new ClientServer();
-        ClientSender sender = new ClientSender("127.0.0.10");
+        ClientSender sender = new ClientSender();
 
         firstframe.srv = srv;
         firstframe.sender = sender;
-        chatframe.client = sender;
+        chatframe.sender = sender;
         srv.gui = chatframe;
         sender.gui = chatframe;
         srv.start();
-        sender.run();
+        //sender.run();
     }
 }

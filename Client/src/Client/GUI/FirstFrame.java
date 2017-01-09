@@ -24,8 +24,8 @@ public class FirstFrame extends JFrame {
     private static JTextField AddressBox;
     private static JButton EnterButton;
 
-    public String Nick;
-    public String Address;
+    private String Nick;
+    private String Address;
 
     public FirstFrame() {
         JPanel centerPanel = new JPanel();
@@ -99,9 +99,12 @@ public class FirstFrame extends JFrame {
 
     public class EnterListener implements ActionListener, KeyListener
     {
+
         public void actionPerformed(ActionEvent event)
         {
             SetInformation();
+            //sender.welcomeMessage(Nick);
+            sender.clientSocket = sender.make_connection();
             sender.welcomeMessage(Nick);
         }
 
@@ -110,6 +113,8 @@ public class FirstFrame extends JFrame {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
             {
                 SetInformation();
+                //sender.welcomeMessage(Nick);
+                sender.clientSocket = sender.make_connection();
                 sender.welcomeMessage(Nick);
             }
         }
@@ -128,6 +133,7 @@ public class FirstFrame extends JFrame {
                 Nick = NickBox.getText();
                 Address = AddressBox.getText();
                 chatframe.getInformation(Nick, Address);
+                sender.getInformation(Nick, Address);
                 FirstFrame.setVisible(false);
             }
         }

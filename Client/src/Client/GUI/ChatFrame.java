@@ -24,17 +24,17 @@ import javax.swing.text.DefaultCaret;
 
 public class ChatFrame extends JFrame
 {
-    private static JFrame ChatFrame = new JFrame("Chat");
-    public static JTextArea ChatBox;
-    private static JTextField WriteMessageBox;
-    private static JButton SendMessageButton;
-    private static JButton New;
-    JPanel friendListPanel;
+    private JFrame ChatFrame = new JFrame("Chat");
+    public JTextArea ChatBox;
+    private JTextField WriteMessageBox;
+    private JButton SendMessageButton;
+    private JButton New;
+    private JPanel friendListPanel;
 
     private String Nick;
     private String Address;
 
-    public static ClientSender client;
+    public static ClientSender sender;
 
     public ChatFrame()
     {
@@ -151,7 +151,7 @@ public class ChatFrame extends JFrame
         {
             String send_text = WriteMessageBox.getText();
 
-            client.sendMessage(send_text, "adam");
+            sender.sendMessage(send_text, "adam");
 
             ChatBox.append("\n" + Nick + " > " + send_text + "\n");
             WriteMessageBox.setText("");

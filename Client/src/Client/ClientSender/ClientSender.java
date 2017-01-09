@@ -9,21 +9,21 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ClientSender extends Thread {
-    private String targetHost;
+    public String targetHost;
     private final int PORT_server = 6789;
     private BufferedReader inFromUser;
-    private Socket clientSocket;
+    public Socket clientSocket;
     private Boolean quit;
 
     public ChatFrame gui;
+    public String Nick;
 
-    public ClientSender(String targetHost) {
-        this.targetHost = targetHost;
+    public ClientSender() {
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
         quit = false;
     }
 
-    private Socket make_connection() {
+    public Socket make_connection() {
         Socket clientSocket = null;
         try {
             clientSocket = new Socket(targetHost, PORT_server);
@@ -76,12 +76,16 @@ public class ClientSender extends Thread {
         }
     }
 
+    public void getInformation(String Nick, String Address)
+    {
+        this.Nick = Nick;
+        this.targetHost = Address;
+    }
+
     public void run() {
         System.out.println("Making new connection");
         gui.ChatBox.append("Making new connection \n");
 
-        clientSocket = make_connection();
-        //welcomeMessage("adam");
         while (!quit) {
             try {
                 String send_text = inFromUser.readLine();
