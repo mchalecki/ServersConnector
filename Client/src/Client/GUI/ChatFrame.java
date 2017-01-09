@@ -37,6 +37,7 @@ public class ChatFrame extends JFrame
 
     private String Nick;
     private String Address;
+    private int i = 0;
 
     public static ClientSender sender;
 
@@ -74,10 +75,13 @@ public class ChatFrame extends JFrame
         New.setMinimumSize(new Dimension(120,40));
         New.setPreferredSize(new Dimension(120,40));
         New.setMaximumSize(new Dimension(120,40));
+        New.addActionListener(new AddFriendListener());
+
         FriendNickBox = new JTextField();
         FriendNickBox.setMinimumSize(new Dimension(120,25));
         FriendNickBox.setPreferredSize(new Dimension(120,25));
         FriendNickBox.setMaximumSize(new Dimension(120,25));
+        FriendNickBox.addKeyListener(new AddFriendListener());
 
         addFriendPanel.add(FriendNickBox, BorderLayout.NORTH);
         addFriendPanel.add(New, BorderLayout.CENTER);
@@ -121,31 +125,53 @@ public class ChatFrame extends JFrame
                 }
             }
         });
+    }
 
-
-        //ONLY TO CHECK!!!
-        for(int i = 1; i <= 10; i++)
+    public class AddFriendListener implements ActionListener, KeyListener
+    {
+        public void actionPerformed(ActionEvent e)
         {
+            i++;
             AddFriend(friendListPanel, i);
+        }
+
+        public void keyPressed(KeyEvent event)
+        {
+            if(event.getKeyCode() == KeyEvent.VK_ENTER)
+            {
+                i++;
+                AddFriend(friendListPanel, i);
+            }
+        }
+
+        public void keyReleased(KeyEvent e) {
+        }
+
+        public void keyTyped(KeyEvent e) {
         }
     }
 
-    public void AddFriend(JPanel friendListPanel, int number)
+    private void AddFriend(JPanel friendListPanel, int number)
     {
-        int rows = 6;
-        if(number > 6)
-        {
-            rows++;
-            friendListPanel.setLayout(new GridLayout(number, 1));
-        }
-        else friendListPanel.setLayout(new GridLayout(rows, 1));
+        String friend;
+        if(FriendNickBox.getText().length() >= 1) {
+            friend = FriendNickBox.getText();
 
-        JButton button = new JButton();
-        button.setMinimumSize(new Dimension(100,30));
-        button.setPreferredSize(new Dimension(100,30));
-        button.setMaximumSize(new Dimension(100,30));
-        button.setText("user " + number);
-        friendListPanel.add(button);
+            int rows = 5;
+            if (number > 5) {
+                friendListPanel.setLayout(new GridLayout(number, 1));
+            } else friendListPanel.setLayout(new GridLayout(rows, 1));
+
+            JButton button = new JButton();
+            button.setMinimumSize(new Dimension(100, 30));
+            button.setPreferredSize(new Dimension(100, 30));
+            button.setMaximumSize(new Dimension(100, 30));
+            button.setText(friend);
+            friendListPanel.add(button);
+            friendListPanel.revalidate();
+            FriendNickBox.setText("");
+            FriendNickBox.requestFocusInWindow();
+        }
     }
 
     public class SendMessageListener implements ActionListener, KeyListener
