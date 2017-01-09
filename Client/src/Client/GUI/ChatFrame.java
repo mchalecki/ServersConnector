@@ -33,6 +33,7 @@ public class ChatFrame extends JFrame
     private JButton SendMessageButton;
     private JButton New;
     private JPanel friendListPanel;
+    private JTextField FriendNickBox;
 
     private String Nick;
     private String Address;
@@ -67,11 +68,21 @@ public class ChatFrame extends JFrame
         DefaultCaret caret = (DefaultCaret)ChatBox.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
+        JPanel addFriendPanel = new JPanel();
+        addFriendPanel.setLayout(new BorderLayout());
         New = new JButton("Add Friend!");
-        New.setMinimumSize(new Dimension(120,50));
-        New.setPreferredSize(new Dimension(120,50));
-        New.setMaximumSize(new Dimension(120,50));
-        eastPanel.add(New, BorderLayout.NORTH);
+        New.setMinimumSize(new Dimension(120,40));
+        New.setPreferredSize(new Dimension(120,40));
+        New.setMaximumSize(new Dimension(120,40));
+        FriendNickBox = new JTextField();
+        FriendNickBox.setMinimumSize(new Dimension(120,25));
+        FriendNickBox.setPreferredSize(new Dimension(120,25));
+        FriendNickBox.setMaximumSize(new Dimension(120,25));
+
+        addFriendPanel.add(FriendNickBox, BorderLayout.NORTH);
+        addFriendPanel.add(New, BorderLayout.CENTER);
+
+        eastPanel.add(addFriendPanel, BorderLayout.NORTH);
 
         this.friendListPanel = new JPanel();
         int rows = 6;

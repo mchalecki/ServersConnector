@@ -103,7 +103,6 @@ public class FirstFrame extends JFrame {
         public void actionPerformed(ActionEvent event)
         {
             SetInformation();
-            //sender.welcomeMessage(Nick);
             sender.clientSocket = sender.make_connection();
             sender.welcomeMessage(Nick);
         }
@@ -113,7 +112,6 @@ public class FirstFrame extends JFrame {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
             {
                 SetInformation();
-                //sender.welcomeMessage(Nick);
                 sender.clientSocket = sender.make_connection();
                 sender.welcomeMessage(Nick);
             }
