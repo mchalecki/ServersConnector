@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Color;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -174,6 +175,7 @@ public class ChatFrame extends JFrame
             button.setPreferredSize(new Dimension(100, 30));
             button.setMaximumSize(new Dimension(100, 30));
             button.setText(friend);
+            button.setBackground(defaultColor);
             friendListPanel.add(button);
             button.addActionListener(new ButtonListener());
             buttonList.put(button, "");
@@ -183,10 +185,18 @@ public class ChatFrame extends JFrame
         }
     }
 
+    private Color defaultColor = new Color(204,204,255);
+    private Color clickedColor = new Color(153,153,255);
+
     public class ButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent ae) {
+            if(clickedButton != null)
+            {
+                clickedButton.setBackground(defaultColor);
+            }
             clickedButton = (JButton) ae.getSource();
+            clickedButton.setBackground(clickedColor);
             String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
             target = nameOfButton;
             server.target = nameOfButton;
