@@ -17,6 +17,8 @@ public class ClientServer extends Thread {
     private final int PORT = 6789;
     private String temp_my_inet = "127.0.0.11";
     public ChatFrame gui;
+    public String target;
+
     @Nullable
     private ServerSocket createServer() {
         InetAddress address = null;
@@ -26,10 +28,8 @@ public class ClientServer extends Thread {
             System.out.println("Can't create inet address");
         }
         try {
-
             ServerSocket serverSocket = new ServerSocket(PORT, 50, address);
             System.out.println("Created server");
-            gui.ChatBox.append("Created server \n");
             return serverSocket;
         } catch (IOException e) {
             System.out.println("Cant create server");
@@ -43,7 +43,6 @@ public class ClientServer extends Thread {
         try {
             Socket connectionSocket = serverSocket.accept();
             System.out.println("New client connected");
-            //gui.ChatBox.append("New client connected \n");
             return connectionSocket;
         } catch (IOException e) {
             System.out.print("Can't tak user");
@@ -71,11 +70,24 @@ public class ClientServer extends Thread {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
-                gui.ChatBox.append("Received: " + received_text);
+                gui.ChatBox.append("\n" + target + " > " + processReceivedMessage(received_text));
+                String new_message = gui.buttonList.get(gui.clickedButton);
+                new_message += "\n" + target + " > " + processReceivedMessage(received_text);
+                gui.buttonList.put(gui.clickedButton, new_message);
             } else {
                 System.out.print("Client has disconnected");
                 break;
             }
         }
+    }
+
+    private String processReceivedMessage(String message) {
+        String a = null;
+        String[] parts = message.split("\"");
+        int l = parts.length;
+        for(int i =0;i<l;i++) {
+            if (parts[i].equals("text")) a = parts[i + 2];
+        }
+        return a;
     }
 }

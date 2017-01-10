@@ -151,6 +151,7 @@ public class FirstFrame extends JFrame {
                     SetInformation();
                     sender.clientSocket = sender.make_connection();
                     sender.welcomeMessage(Nick);
+                    chatframe.ChatBox.append("\n Add friends! \n");
                 }
 
             }

@@ -19,9 +19,10 @@ public class ClientMain {
         firstframe.srv = srv;
         firstframe.sender = sender;
         chatframe.sender = sender;
+        chatframe.server = srv;
         srv.gui = chatframe;
         sender.gui = chatframe;
         srv.start();
-        //sender.run();
+
     }
 }

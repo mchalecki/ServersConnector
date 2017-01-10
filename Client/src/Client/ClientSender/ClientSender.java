@@ -9,14 +9,16 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ClientSender extends Thread {
-    public String targetHost;
+    private String targetHost;
     private final int PORT_server = 6789;
     private BufferedReader inFromUser;
     public Socket clientSocket;
     private Boolean quit;
 
     public ChatFrame gui;
-    public String Nick;
+    private String Nick;
+
+    private String target;
 
     public ClientSender() {
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -95,7 +97,7 @@ public class ClientSender extends Thread {
                     clientSocket.close();
                     System.exit(0);
                 } else
-                    sendMessage(send_text, "adam");
+                    sendMessage(send_text, target);
             } catch (IOException e) {
                 System.out.println("Can't read from console");
             }

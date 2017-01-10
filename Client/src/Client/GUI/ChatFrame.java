@@ -1,6 +1,7 @@
 package Client.GUI;
 
 import Client.ClientSender.ClientSender;
+import Client.ClientServer.ClientServer;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -24,6 +25,7 @@ import javax.swing.JTextField;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
+import java.util.HashMap;
 
 public class ChatFrame extends JFrame
 {
@@ -34,12 +36,17 @@ public class ChatFrame extends JFrame
     private JButton New;
     private JPanel friendListPanel;
     private JTextField FriendNickBox;
+    public JButton clickedButton;
 
     private String Nick;
     private String Address;
     private int i = 0;
+    private String target;
 
-    public static ClientSender sender;
+    public ClientSender sender;
+    public ClientServer server;
+
+    public HashMap<JButton, String> buttonList = new HashMap<JButton, String>();
 
     public ChatFrame()
     {
@@ -168,9 +175,23 @@ public class ChatFrame extends JFrame
             button.setMaximumSize(new Dimension(100, 30));
             button.setText(friend);
             friendListPanel.add(button);
+            button.addActionListener(new ButtonListener());
+            buttonList.put(button, "");
             friendListPanel.revalidate();
             FriendNickBox.setText("");
             FriendNickBox.requestFocusInWindow();
+        }
+    }
+
+    public class ButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent ae) {
+            clickedButton = (JButton) ae.getSource();
+            String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
+            target = nameOfButton;
+            server.target = nameOfButton;
+            ChatBox.setText("Now you can talk with " + target + "\n");
+            ChatBox.append(buttonList.get(clickedButton));
         }
     }
 
@@ -198,16 +219,32 @@ public class ChatFrame extends JFrame
 
     private void sendMessageGUI()
     {
-        if (WriteMessageBox.getText().length() >= 1)
+        if(target != null) {
+            if (WriteMessageBox.getText().length() >= 1) {
+                String send_text = WriteMessageBox.getText();
+
+                sender.sendMessage(send_text, target);
+
+                ChatBox.append("\n" + Nick + " > " + send_text);
+                String new_message = buttonList.get(clickedButton);
+                new_message += "\n" + Nick + " > " + send_text;
+                buttonList.put(clickedButton, new_message);
+
+                WriteMessageBox.setText("");
+            }
+            WriteMessageBox.requestFocusInWindow();
+        }
+        else
         {
-            String send_text = WriteMessageBox.getText();
-
-            sender.sendMessage(send_text, "adam");
-
-            ChatBox.append("\n" + Nick + " > " + send_text + "\n");
+            errorMessage();
             WriteMessageBox.setText("");
         }
-        WriteMessageBox.requestFocusInWindow();
+    }
+
+    private void errorMessage() {
+        JOptionPane.showMessageDialog(null,
+                "Error: You have no friends :(", "Error Massage",
+                JOptionPane.ERROR_MESSAGE);
     }
 
     public void getInformation(String Nick, String Address)
