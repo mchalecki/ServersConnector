@@ -17,12 +17,12 @@ import java.util.Map;
 
 
 public class ServerMain {
-    private static String version = "1.09";
+    private static String version = "1.10";
     private final int PORT = 6789;
     private final int timeout = 2;
     private final String redir_ip = "172.17.02";
     private String nextHost = null;
-    private BiMap<String, String> users = HashBiMap.create();
+    private BiMap<String, String> users = HashBiMap.create(); //IP->Nick
 
     public static void main(String args[]) {
         System.out.println("Server main " + version);
@@ -197,6 +197,10 @@ public class ServerMain {
             if (IP != null) {
                 host = IP;
             } else System.out.println("No match");
+            String senderIp = obj.get("IP_from").toString();
+            content.put("from_user", users.inverse().get(senderIp));
+            obj.put("content", content);
+            message = obj.toString();
         } else {
             host = nextHost;
         }
@@ -211,12 +215,13 @@ public class ServerMain {
         }
         //This is called after sending info of broken connection. This goes again to redir to follow new path after pixing it
         else {
+            String finalMessage = message;
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
                         @Override
                         public void run() {
                             System.out.println("Using task");
-                            sendToRedir(message);
+                            sendToRedir(finalMessage);
                         }
                     },
                     1000
