@@ -1,6 +1,8 @@
 package Servers;
 
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.sun.istack.internal.Nullable;
 
 import java.io.BufferedReader;
@@ -12,9 +14,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 public class ServerMain {
     private final int PORT = 6789;
@@ -138,15 +137,19 @@ public class ServerMain {
 
     private void sendForwardMessage(String message) {
         String host;
-
+        org.json.JSONObject obj = new org.json.JSONObject(message);
+        org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
         if (nextHost == null) {
-            org.json.JSONObject obj = new org.json.JSONObject(message);
-            org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
             System.out.println(content.toString());
             String to = content.getString("to");
             host = users.get(to);
-        } else
+        } else {
             host = nextHost;
+            String senderIp = obj.get("IP_from").toString();
+            content.put("from_user", users.inverse().get(senderIp));
+            obj.put("content", content);
+            message = obj.toString();
+        }
         Socket clientSocket = makeSenderSocket(host);
         if (clientSocket != null) {
             try {
