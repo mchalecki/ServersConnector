@@ -3,6 +3,7 @@ package Servers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.sun.istack.internal.Nullable;
+import org.json.JSONObject;
 import tools.Tools;
 
 import java.io.BufferedReader;
@@ -189,18 +190,11 @@ public class ServerMain {
         String host = null;
         if (nextHost == null) {
             org.json.JSONObject obj = new org.json.JSONObject(message);
-            org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
-            System.out.println(content.toString());
-            String to = content.getString("to");
-            System.out.println("User socket address" + users.get(to));
-            String IP = Tools.getIp(users.get(to));
+            String IP = getIPFromMessageObj(obj);
             if (IP != null) {
                 host = IP;
             } else System.out.println("No match");
-            String senderIp = obj.get("IP_from").toString();
-            content.put("from_user", users.inverse().get(senderIp));
-            obj.put("content", content);
-            message = obj.toString();
+            message = addFromUserToContent(obj);
         } else {
             host = nextHost;
         }
@@ -227,5 +221,21 @@ public class ServerMain {
                     1000
             );
         }
+    }
+
+    private String getIPFromMessageObj(JSONObject obj) {
+        org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
+        System.out.println(content.toString());
+        String to = content.getString("to");
+        System.out.println("User socket address" + users.get(to));
+        return Tools.getIp(users.get(to));
+    }
+
+    private String addFromUserToContent(JSONObject obj) {
+        org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
+        String senderIp = obj.get("IP_from").toString();
+        content.put("from_user", users.inverse().get(senderIp));
+        obj.put("content", content);
+        return obj.toString();
     }
 }
