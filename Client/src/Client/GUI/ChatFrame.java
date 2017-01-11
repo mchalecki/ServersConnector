@@ -44,12 +44,11 @@ public class ChatFrame extends JFrame
     private String Nick;
     private String Address;
     private int i = 0;
-    private String target;
+    public String target;
 
     public ClientSender sender;
     public ClientServer server;
 
-    //public HashMap<JButton, String> buttonList = new HashMap<JButton, String>();
     public ArrayList<MyButton> buttonList = new ArrayList<MyButton>();
 
     public ChatFrame()
@@ -186,18 +185,6 @@ public class ChatFrame extends JFrame
                 friendListPanel.setLayout(new GridLayout(number, 1));
             } else friendListPanel.setLayout(new GridLayout(rows, 1));
 
-            /*JButton button = new JButton();
-            button.setMinimumSize(new Dimension(100, 30));
-            button.setPreferredSize(new Dimension(100, 30));
-            button.setMaximumSize(new Dimension(100, 30));
-            button.setText(friend);
-            button.setBackground(defaultColor);
-            friendListPanel.add(button);
-            button.addActionListener(new ButtonListener());
-            buttonList.put(button, "");
-            friendListPanel.revalidate();
-            FriendNickBox.setText("");
-            FriendNickBox.requestFocusInWindow();*/
             MyButton button = new MyButton();
             button.setMinimumSize(new Dimension(100, 30));
             button.setPreferredSize(new Dimension(100, 30));
@@ -230,7 +217,7 @@ public class ChatFrame extends JFrame
             String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
             target = nameOfButton;
             server.target = nameOfButton;
-            //ChatBox.setText("Now you can talk with " + target + "\n");
+            ChatBox.setText("");
             ChatBox.append(clickedButton.content);
         }
     }

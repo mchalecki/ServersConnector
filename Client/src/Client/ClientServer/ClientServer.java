@@ -78,11 +78,10 @@ public class ClientServer extends Thread {
                 MyButton button = IterateList(received_text);
                 if(button != null)
                 {
-                     if(button.user.equals(target))
+                     if(button.user.equals(gui.target))
                      {
-                        gui.ChatBox.append("\n" + target + " > " + processReceivedMessage(received_text));
+                        gui.ChatBox.append("\n" + button.user + " > " + processReceivedMessage(received_text));
                      }
-                    //String new_message = buttonList.get(clickedButton);
                     button.content += "\n" + button.user + " > " + processReceivedMessage(received_text);  
                 }
                  } else {
@@ -96,7 +95,7 @@ public class ClientServer extends Thread {
         MyButton but;
         for(int i = 0; i < gui.buttonList.size(); i++)
         {
-            if(!processUserFrom(message).equals(gui.buttonList.get(i).user))
+            if(processUserFrom(message).equals(gui.buttonList.get(i).user))
             {
                 but = gui.buttonList.get(i);
                 return but;
