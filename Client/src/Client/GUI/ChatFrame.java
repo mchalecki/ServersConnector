@@ -15,7 +15,9 @@ import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Color;
+import java.awt.Container;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,7 +39,7 @@ public class ChatFrame extends JFrame
     private JButton New;
     private JPanel friendListPanel;
     private JTextField FriendNickBox;
-    public JButton clickedButton;
+    public MyButton clickedButton;
 
     private String Nick;
     private String Address;
@@ -47,7 +49,8 @@ public class ChatFrame extends JFrame
     public ClientSender sender;
     public ClientServer server;
 
-    public HashMap<JButton, String> buttonList = new HashMap<JButton, String>();
+    //public HashMap<JButton, String> buttonList = new HashMap<JButton, String>();
+    public ArrayList<MyButton> buttonList = new ArrayList<MyButton>();
 
     public ChatFrame()
     {
@@ -60,7 +63,7 @@ public class ChatFrame extends JFrame
         JPanel eastPanel = new JPanel();
         eastPanel.setLayout(new BorderLayout());
 
-        JPanel friendPanel = (JPanel)this.getContentPane();
+        JPanel friendPanel =(JPanel) this.getContentPane();
         friendPanel.setLayout(new BorderLayout());
 
         WriteMessageBox = new JTextField();
@@ -135,6 +138,19 @@ public class ChatFrame extends JFrame
         });
     }
 
+    public static class MyButton extends JButton{
+
+        
+        public String content;
+        public String user;
+        
+        public MyButton() {
+           
+            content = null;
+            user = null;
+        }
+    }
+
     public class AddFriendListener implements ActionListener, KeyListener
     {
         public void actionPerformed(ActionEvent e)
@@ -170,7 +186,7 @@ public class ChatFrame extends JFrame
                 friendListPanel.setLayout(new GridLayout(number, 1));
             } else friendListPanel.setLayout(new GridLayout(rows, 1));
 
-            JButton button = new JButton();
+            /*JButton button = new JButton();
             button.setMinimumSize(new Dimension(100, 30));
             button.setPreferredSize(new Dimension(100, 30));
             button.setMaximumSize(new Dimension(100, 30));
@@ -179,6 +195,20 @@ public class ChatFrame extends JFrame
             friendListPanel.add(button);
             button.addActionListener(new ButtonListener());
             buttonList.put(button, "");
+            friendListPanel.revalidate();
+            FriendNickBox.setText("");
+            FriendNickBox.requestFocusInWindow();*/
+            MyButton button = new MyButton();
+            button.setMinimumSize(new Dimension(100, 30));
+            button.setPreferredSize(new Dimension(100, 30));
+            button.setMaximumSize(new Dimension(100, 30));
+            button.setText(friend);
+            button.user = friend;
+            button.content = "Now you can talk with " + friend + "\n";
+            buttonList.add(button);
+            button.setBackground(defaultColor);
+            friendListPanel.add(button);
+            button.addActionListener(new ButtonListener());
             friendListPanel.revalidate();
             FriendNickBox.setText("");
             FriendNickBox.requestFocusInWindow();
@@ -195,13 +225,13 @@ public class ChatFrame extends JFrame
             {
                 clickedButton.setBackground(defaultColor);
             }
-            clickedButton = (JButton) ae.getSource();
+            clickedButton = (MyButton) ae.getSource();
             clickedButton.setBackground(clickedColor);
             String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
             target = nameOfButton;
             server.target = nameOfButton;
-            ChatBox.setText("Now you can talk with " + target + "\n");
-            ChatBox.append(buttonList.get(clickedButton));
+            //ChatBox.setText("Now you can talk with " + target + "\n");
+            ChatBox.append(clickedButton.content);
         }
     }
 
@@ -236,9 +266,8 @@ public class ChatFrame extends JFrame
                 sender.sendMessage(send_text, target);
 
                 ChatBox.append("\n" + Nick + " > " + send_text);
-                String new_message = buttonList.get(clickedButton);
-                new_message += "\n" + Nick + " > " + send_text;
-                buttonList.put(clickedButton, new_message);
+                //String new_message = buttonList.get(clickedButton);
+                clickedButton.content += "\n" + Nick + " > " + send_text;
 
                 WriteMessageBox.setText("");
             }
@@ -263,4 +292,10 @@ public class ChatFrame extends JFrame
         this.Address = Address;
         ChatFrame.setVisible(true);
     }
+    
+   // public class MyButton extends JButton
+    
+        
+        
+    
 }
