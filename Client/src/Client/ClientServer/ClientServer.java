@@ -12,6 +12,9 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import Client.GUI.ChatFrame;
+import java.util.Iterator;
+import java.util.Map;
+import javax.swing.JButton;
 
 public class ClientServer extends Thread {
     private final int PORT = 6789;
@@ -70,15 +73,47 @@ public class ClientServer extends Thread {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
-                gui.ChatBox.append("\n" + target + " > " + processReceivedMessage(received_text));
-                String new_message = gui.buttonList.get(gui.clickedButton);
-                new_message += "\n" + target + " > " + processReceivedMessage(received_text);
-                gui.buttonList.put(gui.clickedButton, new_message);
+                JButton button = IterateMap(gui.buttonList, received_text);
+                if(button.getText().equals(target))
+                {
+                    if(processReceivedMessage(received_text) != null)
+                        gui.ChatBox.append("\n" + target + " > " + processReceivedMessage(received_text));
+                }
+                String new_message = gui.buttonList.get(button);
+                new_message += "\n" + button.getText() + " > " + processReceivedMessage(received_text);
+                gui.buttonList.put(button, new_message);
             } else {
                 System.out.print("Client has disconnected");
                 break;
             }
+            
         }
+    }
+    
+    public JButton IterateMap(Map mp, String message) {
+    Iterator it = mp.entrySet().iterator();
+    while (it.hasNext()) {
+        Map.Entry pair = (Map.Entry)it.next();
+        JButton but = (JButton)pair.getKey();
+        String nameOfBut = but.getText();
+        if(nameOfBut.equals(processUserFrom(message)))
+        {
+            it.remove();
+            return but;
+        }
+    }
+    it.remove();
+    return null;
+    }
+
+    private String processUserFrom(String message) {
+        String a = null;
+        String[] parts = message.split("\"");
+        int l = parts.length;
+        for(int i =0;i<l;i++) {
+            if (parts[i].equals("from_user")) a = parts[i + 2];
+        }
+        return a;
     }
 
     private String processReceivedMessage(String message) {
