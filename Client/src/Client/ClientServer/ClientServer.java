@@ -12,6 +12,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import Client.GUI.ChatFrame;
+import Client.GUI.ChatFrame.MyButton;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import javax.swing.JButton;
@@ -73,37 +75,34 @@ public class ClientServer extends Thread {
             }
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
-                JButton button = IterateMap(gui.buttonList, received_text);
-                if(button.getText().equals(target))
+                MyButton button = IterateList(received_text);
+                if(button != null)
                 {
-                    if(processReceivedMessage(received_text) != null)
+                     if(button.user.equals(target))
+                     {
                         gui.ChatBox.append("\n" + target + " > " + processReceivedMessage(received_text));
+                     }
+                    //String new_message = buttonList.get(clickedButton);
+                    button.content += "\n" + button.user + " > " + processReceivedMessage(received_text);  
                 }
-                String new_message = gui.buttonList.get(button);
-                new_message += "\n" + button.getText() + " > " + processReceivedMessage(received_text);
-                gui.buttonList.put(button, new_message);
-            } else {
-                System.out.print("Client has disconnected");
-                break;
-            }
-            
-        }
+                 } else {
+                     System.out.print("Client has disconnected");
+                     break;
+                 }
+    }
     }
     
-    public JButton IterateMap(Map mp, String message) {
-    Iterator it = mp.entrySet().iterator();
-    while (it.hasNext()) {
-        Map.Entry pair = (Map.Entry)it.next();
-        JButton but = (JButton)pair.getKey();
-        String nameOfBut = but.getText();
-        if(nameOfBut.equals(processUserFrom(message)))
+    public MyButton IterateList(String message) {
+        MyButton but;
+        for(int i = 0; i < gui.buttonList.size(); i++)
         {
-            it.remove();
-            return but;
+            if(!processUserFrom(message).equals(gui.buttonList.get(i).user))
+            {
+                but = gui.buttonList.get(i);
+                return but;
+            }
         }
-    }
-    it.remove();
-    return null;
+        return null;
     }
 
     private String processUserFrom(String message) {
