@@ -91,13 +91,14 @@ public class ClientServer extends Thread {
     }
     }
     
-    public MyButton IterateList(String message) {
+    private MyButton IterateList(String message) {
         MyButton but;
         for(int i = 0; i < gui.buttonList.size(); i++)
         {
             if(processUserFrom(message).equals(gui.buttonList.get(i).user))
             {
                 but = gui.buttonList.get(i);
+
                 return but;
             }
         }
