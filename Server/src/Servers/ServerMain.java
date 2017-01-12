@@ -18,14 +18,15 @@ import java.util.Map;
 
 
 public class ServerMain {
-    private static String version = "1.10";
+    private static String version = "1.11";
     private final int PORT = 6789;
     private final int timeout = 2;
-    private final String redir_ip = "172.17.02";
+    private static String redir_ip;
     private String nextHost = null;
     private BiMap<String, String> users = HashBiMap.create(); //IP->Nick
 
     public static void main(String args[]) {
+        redir_ip=System.getProperty("redir");
         System.out.println("Server main " + version);
         ServerMain srv = new ServerMain();
         srv.run();

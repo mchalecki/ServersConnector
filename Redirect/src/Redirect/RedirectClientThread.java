@@ -14,7 +14,7 @@ public class RedirectClientThread extends Thread {
     private static String nextHost = null;
     private static ArrayList<String> servers = new ArrayList<>();
     private final int PORT = 6789;
-    private final int timeout = 3;
+    private final int timeout = 10;
     private Socket socket;
     private BufferedReader brinp = null;
 

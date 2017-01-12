@@ -1,13 +1,13 @@
 FROM anapsix/alpine-java
 COPY out/Redirect.jar /home/Redirect.jar
 CMD ["java","-jar","/home/Redirect.jar"]
-#sudo ip addr add 192.168.1.100/24 dev enp0s25
-#Rebuild
-#Kill && delete
-#sudo docker rmi
-#Rebuild
+#   Kill container
+#docker rm -f redir1
+#   Delete image
+#sudo docker rmi redir
+#   Rebuild
 #sudo docker build -t redir .
-#run
+#   run
 #sudo docker run -d --name redir1 redir
-#logs
-#sudo docker logs redir3
+#   logs
+#sudo docker logs redir1

@@ -1,13 +1,13 @@
 FROM anapsix/alpine-java
 COPY out/Client.jar /home/Client.jar
 CMD ["java","-jar","/home/Client.jar"]
-#sudo ip addr add 192.168.1.193/24 dev enp0s25
-#Rebuild
-#Kill && delete
-#sudo docker rmi
-#Rebuild
+#   Kill container
+#docker rm -f client1
+#   Delete image
+#sudo docker rmi client
+#   Rebuild
 #sudo docker build -t client .
-#run
+#   run
 #sudo docker run -i -t --name client1 client
-#logs
+#   logs
 #sudo docker logs client1

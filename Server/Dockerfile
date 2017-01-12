@@ -1,13 +1,13 @@
 FROM anapsix/alpine-java
 COPY out/Server.jar /home/Server.jar
-CMD ["java","-jar","/home/Server.jar"]
-#sudo ip addr add 192.168.1.10/24 dev enp0s25
-#Rebuild
-#Kill && delete
-#sudo docker rmi
-#Rebuild
+CMD ["java","-Dredir=172.17.02","-jar","/home/Server.jar"]
+#   Kill container
+#docker rm -f srv1
+#   Delete image
+#sudo docker rmi srv
+#   Rebuild
 #sudo docker build -t srv .
-#run
+#   run
 #sudo docker run -d --name srv1 srv
-#logs
+#   logs
 #sudo docker logs srv1
