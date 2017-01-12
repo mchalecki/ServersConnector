@@ -15,7 +15,6 @@ import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Color;
-import java.awt.Container;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,7 +27,6 @@ import javax.swing.JTextField;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
-import java.util.HashMap;
 
 public class ChatFrame extends JFrame
 {
@@ -37,19 +35,18 @@ public class ChatFrame extends JFrame
     private JTextField WriteMessageBox;
     private JButton SendMessageButton;
     private JButton New;
-    private JPanel friendListPanel;
+    public JPanel friendListPanel;
     private JTextField FriendNickBox;
     public MyButton clickedButton;
 
     private String Nick;
     private String Address;
-    private int i = 0;
     public String target;
 
     public ClientSender sender;
     public ClientServer server;
 
-    public ArrayList<MyButton> buttonList = new ArrayList<MyButton>();
+    public ArrayList<MyButton> buttonList = new ArrayList<>();
 
     public ChatFrame()
     {
@@ -154,16 +151,14 @@ public class ChatFrame extends JFrame
     {
         public void actionPerformed(ActionEvent e)
         {
-            i++;
-            AddFriend(friendListPanel, i);
+            AddFriend(friendListPanel);
         }
 
         public void keyPressed(KeyEvent event)
         {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
             {
-                i++;
-                AddFriend(friendListPanel, i);
+                AddFriend(friendListPanel);
             }
         }
 
@@ -174,44 +169,68 @@ public class ChatFrame extends JFrame
         }
     }
 
-    private void AddFriend(JPanel friendListPanel, int number)
+    private void AddFriend(JPanel friendListPanel)
     {
         String friend;
         if(FriendNickBox.getText().length() >= 1) {
             friend = FriendNickBox.getText();
 
-            int rows = 5;
-            if (number > 5) {
-                friendListPanel.setLayout(new GridLayout(number, 1));
-            } else friendListPanel.setLayout(new GridLayout(rows, 1));
+            if(notAdded(friend)) {
+                if (buttonList.size() >= 5) {
+                    friendListPanel.setLayout(new GridLayout(buttonList.size() + 1, 1));
+                } else friendListPanel.setLayout(new GridLayout(5, 1));
 
-            MyButton button = new MyButton();
-            button.setMinimumSize(new Dimension(100, 30));
-            button.setPreferredSize(new Dimension(100, 30));
-            button.setMaximumSize(new Dimension(100, 30));
-            button.setText(friend);
-            button.user = friend;
-            button.content = "Now you can talk with " + friend + "\n";
-            buttonList.add(button);
-            button.setBackground(defaultColor);
-            friendListPanel.add(button);
-            button.addActionListener(new ButtonListener());
-            friendListPanel.revalidate();
-            FriendNickBox.setText("");
-            FriendNickBox.requestFocusInWindow();
+                MyButton button = new MyButton();
+                button.setMinimumSize(new Dimension(100, 30));
+                button.setPreferredSize(new Dimension(100, 30));
+                button.setMaximumSize(new Dimension(100, 30));
+                button.setText(friend);
+                button.user = friend;
+                button.content = "Now you can talk with " + friend + "\n";
+                buttonList.add(button);
+                friendListPanel.add(button);
+                button.addActionListener(new ButtonListener());
+                friendListPanel.revalidate();
+                FriendNickBox.setText("");
+                FriendNickBox.requestFocusInWindow();
+
+                if (clickedButton != null) {
+                    clickedButton.setBackground(defaultColor);
+                }
+                clickedButton = button;
+                clickedButton.setBackground(clickedColor);
+                target = friend;
+                server.target = friend;
+                ChatBox.setText("");
+                ChatBox.append(clickedButton.content);
+            }
+            else
+            {
+                FriendNickBox.setText("");
+                errorMessage("You have " + friend + " on the list");
+            }
         }
     }
 
-    private Color defaultColor = new Color(204,204,255);
-    private Color clickedColor = new Color(153,153,255);
+    private boolean notAdded(String name)
+    {
+        for(int i = 0; i < buttonList.size(); i++)
+        {
+            if(name.equals(buttonList.get(i).user))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Color defaultColor = new Color(204,204,255);
+    public Color clickedColor = new Color(153,153,255);
 
     public class ButtonListener implements ActionListener
     {
         public void actionPerformed(ActionEvent ae) {
-            if(clickedButton != null)
-            {
-                clickedButton.setBackground(defaultColor);
-            }
+            clickedButton.setBackground(defaultColor);
             clickedButton = (MyButton) ae.getSource();
             clickedButton.setBackground(clickedColor);
             String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
@@ -253,7 +272,7 @@ public class ChatFrame extends JFrame
                 sender.sendMessage(send_text, target);
 
                 ChatBox.append("\n" + Nick + " > " + send_text);
-                //String new_message = buttonList.get(clickedButton);
+
                 clickedButton.content += "\n" + Nick + " > " + send_text;
 
                 WriteMessageBox.setText("");
@@ -262,27 +281,20 @@ public class ChatFrame extends JFrame
         }
         else
         {
-            errorMessage();
+            errorMessage("You have no friends :(");
             WriteMessageBox.setText("");
         }
     }
 
-    private void errorMessage() {
+    private void errorMessage(String s) {
         JOptionPane.showMessageDialog(null,
-                "Error: You have no friends :(", "Error Massage",
+                "Error: " + s, "Error Massage",
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public void getInformation(String Nick, String Address)
-    {
+    public void getInformation(String Nick, String Address) {
         this.Nick = Nick;
         this.Address = Address;
         ChatFrame.setVisible(true);
     }
-    
-   // public class MyButton extends JButton
-    
-        
-        
-    
 }

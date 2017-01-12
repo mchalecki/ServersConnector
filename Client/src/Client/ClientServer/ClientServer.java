@@ -2,6 +2,9 @@ package Client.ClientServer;
 
 import com.sun.istack.internal.Nullable;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +19,7 @@ import Client.GUI.ChatFrame.MyButton;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import javax.swing.JButton;
+import javax.swing.*;
 
 public class ClientServer extends Thread {
     private final int PORT = 6789;
@@ -55,6 +58,8 @@ public class ClientServer extends Thread {
         }
     }
 
+    private Color newMessageColor = new Color (255, 100, 108);
+
     public void run() {
         String received_text;
         ServerSocket serverSocket = createServer();
@@ -76,19 +81,21 @@ public class ClientServer extends Thread {
             if (received_text != null) {
                 System.out.println("Received: " + received_text);
                 MyButton button = IterateList(received_text);
-                if(button != null)
-                {
-                     if(button.user.equals(gui.target))
-                     {
+                if(button != null) {
+                     if(button.user.equals(gui.target)) {
                         gui.ChatBox.append("\n" + button.user + " > " + processReceivedMessage(received_text));
                      }
-                    button.content += "\n" + button.user + " > " + processReceivedMessage(received_text);  
+                     else {
+                         button.setBackground(newMessageColor);
+                     }
+                    button.content += "\n" + button.user + " > " + processReceivedMessage(received_text);
                 }
-                 } else {
-                     System.out.print("Client has disconnected");
-                     break;
-                 }
-    }
+            }
+            else {
+                System.out.print("Client has disconnected");
+                break;
+            }
+        }
     }
     
     private MyButton IterateList(String message) {
@@ -98,11 +105,11 @@ public class ClientServer extends Thread {
             if(processUserFrom(message).equals(gui.buttonList.get(i).user))
             {
                 but = gui.buttonList.get(i);
-
                 return but;
             }
         }
-        return null;
+        but = AddUnknownFriend(gui.friendListPanel, processUserFrom(message));
+        return but;
     }
 
     private String processUserFrom(String message) {
@@ -123,5 +130,40 @@ public class ClientServer extends Thread {
             if (parts[i].equals("text")) a = parts[i + 2];
         }
         return a;
+    }
+
+    private MyButton AddUnknownFriend(JPanel friendListPanel, String friend)
+    {
+        if (gui.buttonList.size() > 5) {
+            friendListPanel.setLayout(new GridLayout(gui.buttonList.size() + 1, 1));
+        } else friendListPanel.setLayout(new GridLayout(5, 1));
+
+        MyButton button = new MyButton();
+        button.setMinimumSize(new Dimension(100, 30));
+        button.setPreferredSize(new Dimension(100, 30));
+        button.setMaximumSize(new Dimension(100, 30));
+        button.setText(friend);
+        button.user = friend;
+        button.content = "Now you can talk with " + friend + "\n";
+        gui.buttonList.add(button);
+        friendListPanel.add(button);
+        button.addActionListener(new ButtonListener());
+        friendListPanel.revalidate();
+
+        return button;
+    }
+
+    public class ButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent ae) {
+            gui.clickedButton.setBackground(gui.defaultColor);
+            gui.clickedButton = (MyButton) ae.getSource();
+            gui.clickedButton.setBackground(gui.clickedColor);
+            String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
+            target = nameOfButton;
+            gui.target = nameOfButton;
+            gui.ChatBox.setText("");
+            gui.ChatBox.append(gui.clickedButton.content);
+        }
     }
 }
