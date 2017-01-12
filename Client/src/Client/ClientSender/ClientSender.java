@@ -2,6 +2,8 @@ package Client.ClientSender;
 
 import tools.Tools;
 
+import Client.GUI.ChatFrame;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,42 +14,18 @@ public class ClientSender extends Thread {
     private String targetHost;
     private final int PORT = 6789;
     private BufferedReader inFromUser;
-    private Socket clientSocket;
+    public Socket clientSocket;
     private Boolean quit;
+    public ChatFrame gui;
+    private String Nick;
+    private String target;
 
-    public ClientSender(String targetHost) {
-        this.targetHost = targetHost;
+    public ClientSender() {
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
         quit = false;
     }
 
-    public void run() {
-        System.out.println("Making new connection");
-        clientSocket = Tools.connectTo(targetHost, PORT);
-        welcomeMessage("adam");
-        while (!quit) {
-            //GUI but now reading from console
-            try {
-                String send_text = inFromUser.readLine();
-                if (send_text.equals("q")) {
-                    quit = true;
-                    disconnectMessage();
-                    clientSocket.close();
-                    System.exit(0);
-                } else
-                    sendMessage(send_text, "adam");
-            } catch (IOException e) {
-                System.out.println("Can't read from console");
-            }
-        }
-        try {
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendMessage(String message, String target) {
+    public void sendMessage(String message, String target) {
         org.json.JSONObject mes = new org.json.JSONObject();
         org.json.JSONObject content = new org.json.JSONObject();
         content.put("text", message);
@@ -56,11 +34,10 @@ public class ClientSender extends Thread {
         mes.put("content", content);
         sendForward(mes.toString());
     }
-
     /**
      * Logging to system as first connection.
      */
-    private void welcomeMessage(String nick) {
+    public void welcomeMessage(String nick) {
         org.json.JSONObject mes = new org.json.JSONObject();
         org.json.JSONObject content = new org.json.JSONObject();
         content.put("nick", nick);
@@ -69,7 +46,7 @@ public class ClientSender extends Thread {
         sendForward(mes.toString());
     }
 
-    private void disconnectMessage() {
+    public void disconnectMessage() {
         org.json.JSONObject mes = new org.json.JSONObject();
         mes.put("type", 2);
         mes.put("content", new org.json.JSONObject());
@@ -84,6 +61,38 @@ public class ClientSender extends Thread {
             outToServer.writeBytes(message + '\n');
         } catch (IOException e) {
             System.out.println("Can't send message");
+        }
+    }
+}
+
+    public void getInformation(String Nick, String Address)
+    {
+        this.Nick = Nick;
+        this.targetHost = Address;
+    }
+
+    public void run() {
+        System.out.println("Making new connection");
+        gui.ChatBox.append("Making new connection \n");
+
+        while (!quit) {
+            try {
+                String send_text = inFromUser.readLine();
+                if (send_text.equals("q")) {
+                    quit = true;
+                    disconnectMessage();
+                    clientSocket.close();
+                    System.exit(0);
+                } else
+                    sendMessage(send_text, target);
+            } catch (IOException e) {
+                System.out.println("Can't read from console");
+            }
+        }
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
