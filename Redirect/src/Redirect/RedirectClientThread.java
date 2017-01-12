@@ -14,7 +14,7 @@ public class RedirectClientThread extends Thread {
     private static String nextHost = null;
     private static ArrayList<String> servers = new ArrayList<>();
     private final int PORT = 6789;
-    private final int timeout = 10;
+    private final int timeout = 20;
     private Socket socket;
     private BufferedReader brinp = null;
 
@@ -69,7 +69,10 @@ public class RedirectClientThread extends Thread {
 
     private String addIpToMessage(String message) {
         org.json.JSONObject obj = new org.json.JSONObject(message);
-        obj.put("IP_from", socket.getRemoteSocketAddress().toString());
+        String IPfrom = socket.getRemoteSocketAddress().toString();
+        if (!servers.contains(Tools.getIp(IPfrom))) {
+            obj.put("IP_from", IPfrom);
+        }
         return obj.toString();
     }
 

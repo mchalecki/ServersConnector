@@ -12,10 +12,6 @@ import java.awt.event.KeyListener;
 
 public class FirstFrame extends JFrame {
 
-    public ChatFrame chatframe;
-    public ClientServer srv;
-    public ClientSender sender;
-
     private static JFrame FirstFrame = new JFrame("Chat");
     private static JLabel WelcomeLabel;
     private static JLabel NickLabel;
@@ -23,7 +19,9 @@ public class FirstFrame extends JFrame {
     private static JTextField NickBox;
     private static JTextField AddressBox;
     private static JButton EnterButton;
-
+    public ChatFrame chatframe;
+    public ClientServer srv;
+    public ClientSender sender;
     private String Nick;
     private String Address;
     private boolean verified;
@@ -109,6 +107,12 @@ public class FirstFrame extends JFrame {
         }
     }
 
+    private void errorMessage() {
+        JOptionPane.showMessageDialog(null,
+                "Error: Wrong format of address", "Error Massage",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
     public class MyInputVerifier {
         public boolean verify(JComponent input) {
             String text = ((JTextField) input).getText();
@@ -128,12 +132,6 @@ public class FirstFrame extends JFrame {
             verified = true;
             return true;
         }
-    }
-
-    private void errorMessage() {
-        JOptionPane.showMessageDialog(null,
-                "Error: Wrong format of address", "Error Massage",
-                JOptionPane.ERROR_MESSAGE);
     }
 
     public class InputListener implements KeyListener, ActionListener {

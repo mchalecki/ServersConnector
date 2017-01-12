@@ -19,14 +19,14 @@ import java.util.Map;
 
 public class ServerMain {
     private static String version = "1.11";
+    private static String redir_ip;
     private final int PORT = 6789;
     private final int timeout = 2;
-    private static String redir_ip;
     private String nextHost = null;
     private BiMap<String, String> users = HashBiMap.create(); //IP->Nick
 
     public static void main(String args[]) {
-        redir_ip=System.getProperty("redir");
+        redir_ip = System.getProperty("redir");
         System.out.println("Server main " + version);
         ServerMain srv = new ServerMain();
         srv.run();
@@ -194,7 +194,10 @@ public class ServerMain {
             String IP = getIPFromMessageObj(obj);
             if (IP != null) {
                 host = IP;
-            } else System.out.println("No match");
+            } else {
+                System.out.println("No match. Ignoring message without user");
+                return;
+            }
             message = addFromUserToContent(obj);
         } else {
             host = nextHost;
@@ -224,15 +227,19 @@ public class ServerMain {
         }
     }
 
+    @Nullable
     private String getIPFromMessageObj(JSONObject obj) {
         org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
         System.out.println(content.toString());
         String to = content.getString("to");
         System.out.println("User socket address" + users.get(to));
-        return Tools.getIp(users.get(to));
+        if (users.get(to) != null)
+            return Tools.getIp(users.get(to));
+        else return null;
     }
 
     private String addFromUserToContent(JSONObject obj) {
+        System.out.println("Sending to user. Adding from_user to the content.");
         org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
         String senderIp = obj.get("IP_from").toString();
         content.put("from_user", users.inverse().get(senderIp));

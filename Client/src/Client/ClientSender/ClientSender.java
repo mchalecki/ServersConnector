@@ -1,8 +1,7 @@
 package Client.ClientSender;
 
-import tools.Tools;
-
 import Client.GUI.ChatFrame;
+import tools.Tools;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,12 +10,12 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ClientSender extends Thread {
-    private String targetHost;
     private final int PORT = 6789;
-    private BufferedReader inFromUser;
     public Socket clientSocket;
-    private Boolean quit;
     public ChatFrame gui;
+    private String targetHost;
+    private BufferedReader inFromUser;
+    private Boolean quit;
     private String Nick;
     private String target;
 
@@ -63,7 +62,6 @@ public class ClientSender extends Thread {
             System.out.println("Can't send message");
         }
     }
-}
 
     public void getInformation(String Nick, String Address)
     {
@@ -94,5 +92,9 @@ public class ClientSender extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Socket make_connection() {
+        return Tools.connectTo(targetHost, PORT);
     }
 }
