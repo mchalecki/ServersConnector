@@ -4,17 +4,22 @@ import Client.GUI.ChatFrame;
 import Client.GUI.ChatFrame.MyButton;
 import tools.Tools;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
+import javax.swing.*;
 
 public class ClientServer extends Thread {
     private final int PORT = 6789;
     public ChatFrame gui;
     public String target;
+    private Color newMessageColor = new Color (255, 100, 108);
 
     public void run() {
         String received_text;
@@ -38,8 +43,11 @@ public class ClientServer extends Thread {
                 System.out.println("Received: " + received_text);
                 MyButton button = IterateList(received_text);
                 if (button != null) {
-                    if (button.user.equals(target)) {
+                    if (button.user.equals(gui.target)) {
                         gui.ChatBox.append("\n" + button.user + " > " + processReceivedMessage(received_text));
+                    }
+                    else {
+                        button.setBackground(newMessageColor);
                     }
                     button.content += "\n" + button.user + " > " + processReceivedMessage(received_text);
                 }
@@ -60,7 +68,8 @@ public class ClientServer extends Thread {
                 }
             }
         }
-        return null;
+        but = AddUnknownFriend(gui.friendListPanel, processUserFrom(message));
+        return but;
     }
 
     private String processUserFrom(String message) {
@@ -81,5 +90,40 @@ public class ClientServer extends Thread {
             if (parts[i].equals("text")) a = parts[i + 2];
         }
         return a;
+    }
+
+    private MyButton AddUnknownFriend(JPanel friendListPanel, String friend)
+    {
+        if (gui.buttonList.size() > 5) {
+            friendListPanel.setLayout(new GridLayout(gui.buttonList.size() + 1, 1));
+        }
+        else friendListPanel.setLayout(new GridLayout(5, 1));
+
+        MyButton button = new MyButton();
+        button.setMinimumSize(new Dimension(100, 30));
+        button.setPreferredSize(new Dimension(100, 30));
+        button.setMaximumSize(new Dimension(100, 30));
+        button.setText(friend);
+        button.user = friend;
+        button.content = "Now you can talk with " + friend + "\n";
+        gui.buttonList.add(button);
+        friendListPanel.add(button);
+        button.addActionListener(new ButtonListener());
+        friendListPanel.revalidate();
+        return button;
+    }
+
+    public class ButtonListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent ae) {
+            gui.clickedButton.setBackground(gui.defaultColor);
+            gui.clickedButton = (MyButton) ae.getSource();
+            gui.clickedButton.setBackground(gui.clickedColor);
+            String nameOfButton = ((JButton) ae.getSource()).getActionCommand();
+            target = nameOfButton;
+            gui.target = nameOfButton;
+            gui.ChatBox.setText("");
+            gui.ChatBox.append(gui.clickedButton.content);
+        }
     }
 }
