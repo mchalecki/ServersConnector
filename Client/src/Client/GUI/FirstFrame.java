@@ -26,6 +26,9 @@ public class FirstFrame extends JFrame {
     private String Address;
     private boolean verified;
 
+    /**
+     *Constructor of FirstFrame sets all components and their location
+     */
     public FirstFrame() {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new GridBagLayout());
@@ -94,7 +97,11 @@ public class FirstFrame extends JFrame {
         FirstFrame.setLocation(300, 100);
         FirstFrame.setVisible(true);
     }
-
+    
+    /**
+     *Method to pass Nick and Address entered by user to next window
+     * hide FirstFrame and show ChatFrame
+     */
     private void SetInformation() {
         if (NickBox.getText().length() >= 1) {
             if (AddressBox.getText().length() >= 1) {
@@ -113,7 +120,16 @@ public class FirstFrame extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     *Class to verify format of address
+     */
     public class MyInputVerifier {
+
+        /**
+         * @param input which will be String
+         * @return true if format is correct and false otherwise
+         * set variable verified
+         */
         public boolean verify(JComponent input) {
             String text = ((JTextField) input).getText();
             String[] parts = text.split("\\.");
@@ -136,11 +152,21 @@ public class FirstFrame extends JFrame {
 
     public class InputListener implements KeyListener, ActionListener {
 
+         /**
+         *if character entered in not digit or dot then not show it
+         * @param ke
+         */
         public void keyTyped(KeyEvent ke) {
             char ch = ke.getKeyChar();
             if (!(Character.isDigit(ch)) && !(ch == '.')) ke.consume();
         }
 
+         /**
+         *verify format of address, if is correct then go to ChatFrame
+         * adding new user whose Nick was entered
+         * making connection with Redirect whose address was specified
+         * @param ke which is press of enter
+         */
         public void keyPressed(KeyEvent ke) {
             if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
                 MyInputVerifier miv = new MyInputVerifier();
@@ -155,9 +181,17 @@ public class FirstFrame extends JFrame {
             }
         }
 
+        /**
+         *
+         * @param ke
+         */
         public void keyReleased(KeyEvent ke) {
         }
 
+        /**
+         *
+         * @param ke
+         */
         public void actionPerformed(ActionEvent ke) {
             MyInputVerifier miv = new MyInputVerifier();
             miv.verify(AddressBox);
