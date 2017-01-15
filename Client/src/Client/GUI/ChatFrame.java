@@ -38,16 +38,24 @@ public class ChatFrame extends JFrame
     public JPanel friendListPanel;
     private JTextField FriendNickBox;
     public MyButton clickedButton;
-
+    /**
+     * Nick and Address are specified by user
+     * Address points to Redirect
+     */
     private String Nick;
     private String Address;
-    public String target;
 
+    /**
+     * Target is name of friend to whom message will be send
+     */
+    public String target;
     public ClientSender sender;
     public ClientServer server;
-
     public ArrayList<MyButton> buttonList = new ArrayList<>();
 
+    /**
+     *Constructor of ChatFrame sets all components and their location
+     */
     public ChatFrame()
     {
         JPanel mainPanel = new JPanel();
@@ -121,7 +129,10 @@ public class ChatFrame extends JFrame
         ChatFrame.setSize(500, 300);
         ChatFrame.setLocation(300, 100);
         ChatFrame.setVisible(false);
-
+        
+         /**
+         *With closing of window we need to do cleanup
+         */
         ChatFrame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e) {
                 sender.disconnectMessage();
@@ -134,26 +145,38 @@ public class ChatFrame extends JFrame
         });
     }
 
+    /**
+     * Extended version of JButton to hold description of each one
+     */
     public static class MyButton extends JButton{
 
-        
+        /**
+         *Variable content holds whole conversation of specified user
+         */
         public String content;
         public String user;
-        
         public MyButton() {
            
             content = null;
             user = null;
         }
     }
-
     public class AddFriendListener implements ActionListener, KeyListener
     {
+
+       /**
+         *New friend is added to Panel
+         * @param e event which is click of button
+         */
         public void actionPerformed(ActionEvent e)
         {
             AddFriend(friendListPanel);
         }
 
+        /**
+         *
+         * @param event which is press of enter
+         */
         public void keyPressed(KeyEvent event)
         {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
@@ -162,13 +185,24 @@ public class ChatFrame extends JFrame
             }
         }
 
+        /**
+         *
+         * @param e
+         */
         public void keyReleased(KeyEvent e) {
         }
 
+        /**
+         *
+         * @param e
+         */
         public void keyTyped(KeyEvent e) {
         }
     }
-
+        /**
+         *Method is taking from JTextField name of friend
+         * and adding new button with all specifications
+         */
     private void AddFriend(JPanel friendListPanel)
     {
         String friend;
@@ -210,7 +244,9 @@ public class ChatFrame extends JFrame
             }
         }
     }
-
+    /**
+     * Checking if friend is on the list
+     */
     private boolean notAdded(String name) {
         for(int i = 0; i < buttonList.size(); i++) {
             if(name.equals(buttonList.get(i).user)) return false;
@@ -218,11 +254,16 @@ public class ChatFrame extends JFrame
         return true;
     }
 
+   
     public Color defaultColor = new Color(204,204,255);
     public Color clickedColor = new Color(153,153,255);
-
     public class ButtonListener implements ActionListener
     {
+        /**
+         *Getting target from clicked button
+         * show conversation assigned to button
+         * @param ae which is click of button AddFriend
+         */
         public void actionPerformed(ActionEvent ae) {
             clickedButton.setBackground(defaultColor);
             clickedButton = (MyButton) ae.getSource();
@@ -237,11 +278,20 @@ public class ChatFrame extends JFrame
 
     public class SendMessageListener implements ActionListener, KeyListener
     {
+
+        /**
+         *on button click send message
+         * @param event
+         */
         public void actionPerformed(ActionEvent event)
         {
             sendMessageGUI();
         }
 
+        /**
+         *on enter pressed send message
+         * @param event
+         */
         public void keyPressed(KeyEvent event)
         {
             if(event.getKeyCode() == KeyEvent.VK_ENTER)
@@ -250,13 +300,26 @@ public class ChatFrame extends JFrame
             }
         }
 
+        /**
+         *
+         * @param e
+         */
         public void keyReleased(KeyEvent e) {
         }
 
+        /**
+         *
+         * @param e
+         */
         public void keyTyped(KeyEvent e) {
         }
     }
-
+         /**
+         *get message from JTextField
+         * send this message by calling method from ClientSender
+         * show this message on JTextArea
+         * if friend is not chosen show error
+         */
     private void sendMessageGUI()
     {
         if(target != null) {
@@ -286,6 +349,10 @@ public class ChatFrame extends JFrame
                 JOptionPane.ERROR_MESSAGE);
     }
 
+     /**
+     * @param Nick specified by user
+     * @param Address specified by user
+     */
     public void getInformation(String Nick, String Address) {
         this.Nick = Nick;
         this.Address = Address;
