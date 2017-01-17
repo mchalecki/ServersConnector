@@ -7,8 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class RedirectMain {
+    private static String version = "1.05";
     private final int PORT = 6789;
-    private static String version = "1.04";
 
     public static void main(String argv[]) throws IOException, InterruptedException {
         System.out.println("Redirect main " + version);
