@@ -20,7 +20,11 @@ public class ClientServer extends Thread {
     public ChatFrame gui;
     public String target;
     private Color newMessageColor = new Color (255, 100, 108);
-
+  /**
+     *create server socket
+     * create stream for receiving messages
+     * if author of message is among added friends then show this message
+     */
     public void run() {
         String received_text;
         ServerSocket serverSocket = Tools.createServer(PORT);
@@ -57,7 +61,10 @@ public class ClientServer extends Thread {
             }
         }
     }
-
+    /**
+     *@return button from list whose user field is the same as from_user
+     * if user is not in the list of friends yet, add him
+     */
     private MyButton IterateList(String message) {
         MyButton but;
         for (int i = 0; i < gui.buttonList.size(); i++) {
@@ -71,7 +78,10 @@ public class ClientServer extends Thread {
         but = AddUnknownFriend(gui.friendListPanel, processUserFrom(message));
         return but;
     }
-
+     /**
+      * This method splits gotten String which is in JSON format
+     *@return String described as from_user
+     */
     private String processUserFrom(String message) {
         String a = null;
         String[] parts = message.split("\"");
@@ -81,7 +91,10 @@ public class ClientServer extends Thread {
         }
         return a;
     }
-
+     /**
+     *This method splits gotten String which is in JSON format
+     *@return String described as text
+     */
     private String processReceivedMessage(String message) {
         String a = null;
         String[] parts = message.split("\"");
@@ -91,7 +104,10 @@ public class ClientServer extends Thread {
         }
         return a;
     }
-
+        /**
+         *
+         * Method adds button for new friend 
+         */
     private MyButton AddUnknownFriend(JPanel friendListPanel, String friend)
     {
         if (gui.buttonList.size() > 5) {
@@ -115,6 +131,11 @@ public class ClientServer extends Thread {
 
     public class ButtonListener implements ActionListener
     {
+
+        /**
+         *
+         * @param ae  which is click of button
+         */
         public void actionPerformed(ActionEvent ae) {
             gui.clickedButton.setBackground(gui.defaultColor);
             gui.clickedButton = (MyButton) ae.getSource();

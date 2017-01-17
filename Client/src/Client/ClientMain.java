@@ -7,6 +7,14 @@ import Client.GUI.FirstFrame;
 
 public class ClientMain {
     private static final String version = "1.01";
+
+     /**
+     *In main GUIs,ClientServer and ClientSender are created
+     * Components are assigned to each other
+     * Server's thread is started
+     * @param args
+     */
+
     public static void main(String args[]) {
         System.out.println("Client v" + version);
         FirstFrame firstframe = new FirstFrame();
