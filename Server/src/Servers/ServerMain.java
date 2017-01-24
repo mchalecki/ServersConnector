@@ -16,7 +16,6 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
 
-
 public class ServerMain {
     private static String version = "1.12";
     private static String redir_ip;
@@ -25,6 +24,10 @@ public class ServerMain {
     private String nextHost = null;
     private BiMap<String, String> users = HashBiMap.create(); //IP->Nick
 
+    /**
+     * Creating server
+     * @param args
+     */
     public static void main(String args[]) {
         redir_ip = System.getProperty("redir");
         System.out.println("Server main " + version);
@@ -32,6 +35,11 @@ public class ServerMain {
         srv.run();
     }
 
+     /**
+     * create server socket
+     * create stream for receiving messages
+     * process gotten message
+     */
     private void run() {
         String received_text;
         sendConnectionMessageToRedir();
@@ -56,7 +64,10 @@ public class ServerMain {
             }
         }
     }
-
+    /**
+     * Tell Redirect about connection
+     */
+    
     private void sendConnectionMessageToRedir() {
         nextHost = null;
         org.json.JSONObject mes = new org.json.JSONObject();
@@ -64,6 +75,10 @@ public class ServerMain {
         sendToRedir(mes.toString());
     }
 
+     /**
+     * create socket to connect with Redirect
+     * create stream for sending messages
+     */
     private void sendToRedir(String message) {
         Socket clientSocket = Tools.connectTo(redir_ip, PORT);
         try {
@@ -74,6 +89,13 @@ public class ServerMain {
             System.out.println("Can't send message");
         }
     }
+    
+     /**
+     * @param host
+     * @param PORT_next
+     * creating socket with specified host and port
+     * in case of failure, inform Redirect
+     */
 
     @Nullable
     private Socket makeSenderSocket(String host, int PORT_next) {
@@ -92,6 +114,9 @@ public class ServerMain {
         return clientSocket;
     }
 
+     /**
+     * send to Redirect information that connection has been broken
+     */
     private void sendBrokenConnectionInfo() {
         System.out.println("Sending info of broken connection");
         org.json.JSONObject mes = new org.json.JSONObject();
@@ -99,6 +124,10 @@ public class ServerMain {
         sendToRedir(mes.toString());
     }
 
+     /**
+     * @param massage taken from stream
+     * according to different types of massages invoke appropriate methods
+     */
     private void processMessage(String message) {
         org.json.JSONObject obj = new org.json.JSONObject(message);
         int type = obj.getInt("type");
@@ -128,6 +157,10 @@ public class ServerMain {
                 break;
         }
     }
+     /**
+     * @param message is JSON object 
+     * updating list of users
+     */
 
     private void applySynchro(org.json.JSONObject message) {
         System.out.println("Applying synchro = " + message.toString());
@@ -140,6 +173,12 @@ public class ServerMain {
         }
 
     }
+    
+    /** 
+     * @param message which will be cast to JSON 
+     * from message get IP which will be address of next host
+     * synchronise
+     */
 
     private void manageAddingServer(String message) {
         System.out.println("New srv wants to connect");
@@ -155,6 +194,9 @@ public class ServerMain {
         }
     }
 
+     /**
+     * creating JSON object from list of users and sending them to next server
+     */
     private void synchroNewSrv() {
         org.json.JSONObject mes = new org.json.JSONObject();
         org.json.JSONObject content = new org.json.JSONObject();
@@ -167,6 +209,12 @@ public class ServerMain {
         System.out.println("Sending synchro message = " + mes.toString());
         sendForwardMessage(mes.toString());
     }
+    
+    
+    /**
+     * @param message
+     * get data from message to create new user
+     */
 
     private void addUser(org.json.JSONObject message) {
         org.json.JSONObject content = new org.json.JSONObject(message.get("content").toString());
@@ -176,6 +224,11 @@ public class ServerMain {
         if (entry == null) users.put(nick, IP);
         System.out.println("Added new user " + nick + "=" + IP);
     }
+    
+    /**
+     * @param message
+     * delete specific user
+     */
 
     private void deleteUser(org.json.JSONObject message) {
         String IP = message.getString("IP_from");
@@ -186,6 +239,13 @@ public class ServerMain {
             System.out.println("Deleted user");
         }
     }
+     /**
+     * @param message
+     * getting IP from message
+     * adding owner of the message
+     * creating socket and output stream
+     * handle break of connection
+     */
 
     private void sendForwardMessage(String message) {
         String host = null;
@@ -226,6 +286,9 @@ public class ServerMain {
             );
         }
     }
+    /**
+     * @param obj
+     */
 
     @Nullable
     private String getIPFromMessageObj(JSONObject obj) {
@@ -238,6 +301,10 @@ public class ServerMain {
         else return null;
     }
 
+    /**
+     * @param obj
+     * adding new field to JSON object
+     */
     private String addFromUserToContent(JSONObject obj) {
         System.out.println("Sending to user. Adding from_user to the content.");
         org.json.JSONObject content = new org.json.JSONObject(obj.get("content").toString());
