@@ -3,7 +3,6 @@ package Redirect;
 
 import org.json.JSONObject;
 import tools.Tools;
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -18,6 +17,10 @@ public class RedirectClientThread extends Thread {
     private Socket socket;
     private BufferedReader brinp = null;
 
+    /**
+     * In constructor creating stream
+     * @param clientSocket which is assigned to socket field 
+     */
     RedirectClientThread(Socket clientSocket) {
         System.out.println("New client ip=" + clientSocket.getRemoteSocketAddress());
         socket = clientSocket;
@@ -30,6 +33,9 @@ public class RedirectClientThread extends Thread {
         }
     }
 
+    /**
+     * Reading messages from stream and interpreting them
+     */
     public void run() {
         String line;
         while (true) {
@@ -49,6 +55,13 @@ public class RedirectClientThread extends Thread {
             }
         }
     }
+    
+    /**
+     * @param host for creating socket
+     * @param PORT_next for creating socket
+     * @return socket
+     * handle break of connection
+     */
 
     private Socket make_connection(String host, int PORT_next) {
         System.out.println("Making new connection with " + host + ":" + PORT_next);
@@ -66,6 +79,12 @@ public class RedirectClientThread extends Thread {
         }
         return clientSocket;
     }
+    
+    /**
+     * adding addition information to message
+     * @param message which will be cast to JSON
+     * @return String in JSON format
+     */
 
     private String addIpToMessage(String message) {
         org.json.JSONObject obj = new org.json.JSONObject(message);
@@ -76,6 +95,10 @@ public class RedirectClientThread extends Thread {
         return obj.toString();
     }
 
+    /**
+     * according to type of message invoke appropriate method
+     * @param message which will be cast to JSON
+     */
     private void processMessage(String message) {
         org.json.JSONObject obj = new org.json.JSONObject(message);
         int type = obj.getInt("type");
@@ -91,6 +114,10 @@ public class RedirectClientThread extends Thread {
                 break;
         }
     }
+    /**
+     * get IP of server whose connection broke
+     * remove it from the list
+     */
 
     private void handleBrokenConnection() {
         String ipOfBrokenConnection = Tools.getIp(socket.getRemoteSocketAddress().toString());
@@ -116,6 +143,11 @@ public class RedirectClientThread extends Thread {
             sendConnectAgainOrder(tempSrvIp);
         }
     }
+    
+    /**
+     * 
+     * @param target which specifies receiver of message
+     */
 
     private void sendConnectAgainOrder(String target) {
         System.out.println("Sending order to connect again to " + target);
@@ -123,6 +155,14 @@ public class RedirectClientThread extends Thread {
         mes.put("type", 7);
         sendTo(target, PORT, mes.toString());
     }
+    
+    /**
+     * creating socket from given parameters and output stream
+     * @param target needed to create socket
+     * @param PORT needed to create socket
+     * @param message 
+     * handle break of connection
+     */
 
     private void sendTo(String target, int PORT, String message) {
         System.out.println("Sending to:" + target + " message=" + message);
@@ -154,6 +194,10 @@ public class RedirectClientThread extends Thread {
             );
         }
     }
+    /**
+     * adding server 
+     * @param obj from which is got IP of server
+     */
 
     private void addNewSrv(JSONObject obj) {
         String from = obj.getString("IP_from");
