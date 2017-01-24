@@ -11,7 +11,8 @@ import java.util.regex.Pattern;
 public class Tools {
 
     /**
-     * Retrns ip which is in string.
+     * @param message
+     * @return IP which is string.
      */
     public static String getIp(String message) {
         String pattern = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}):(\\d{1,5})";
@@ -23,7 +24,9 @@ public class Tools {
     }
 
     /**
-     * Creates and returns server which listen at the given PORT
+     * Creates server 
+     * @param PORT
+     * @return returns server which listen at the given PORT
      */
     @Nullable
     public static ServerSocket createServer(int PORT) {
@@ -39,7 +42,9 @@ public class Tools {
     }
 
     /**
-     * Returns connection socket from a given serverScoket
+     * 
+     * @param serverSocket
+     * @return connection socket from a given serverScoket
      */
     @Nullable
     public static Socket makeConnectionSocket(ServerSocket serverSocket) {
@@ -54,7 +59,10 @@ public class Tools {
     }
 
     /**
-     * Connects to server and returns that socket
+     * Connects to server 
+     * @param targetHost
+     * @param PORT
+     * @return socket
      */
     @Nullable
     public static Socket connectTo(String targetHost, int PORT) {
